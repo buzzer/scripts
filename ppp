@@ -1,0 +1,108 @@
+#!/usr/bin/perl -w
+# ==============================================================================
+# History:
+# --------
+# Sebastian Rockel   2005-10-31  Initial issue
+#
+# Read data out of ppp.log to accumulate read and sent data via network
+#
+# Syntax: ppp [numeric month] [numeric day of month]
+# Ex:     ppp 10 31
+#
+# ==============================================================================
+# -----------------------
+# Used packages
+# -----------------------
+# Used for date to second conversion
+use Time::Local;
+
+# -----------------------
+# Global variables
+# -----------------------
+# Store Filepath
+$vg_pppfile = "/private/var/log/ppp.log";
+# Set start traffic
+$vg_traffic = 0;
+# Set data limit per month
+$vg_limit = 200;
+# Set working year
+$vg_year  = 2006;
+# Set start second time for calculation if no arguments
+$vg_period_start_sec = timelocal(0,0,0,1,0,2006);
+# Extract the arguments if there are any
+($vg_month, $vg_day) = split(/\s{1,}/, "@ARGV");
+# Get current second time
+$vg_cur_sec = time();
+# Set hash of month names and their numeric value
+%hg_month = ("Jan"=>0,"Feb"=>1,"Mar"=>2,"Apr"=>3,"May"=>4,"Jun"=>5,
+             "Jul"=>6,"Aug"=>7,"Sep"=>8,"Oct"=>9,"Nov"=>10,"Dec"=>11);
+
+# -----------------------
+# Start of code
+# -----------------------
+# Check arguments
+if(!$vg_month && !$vg_day){
+#   $vg_start_sec = timelocal(0,0,0,$vg_day,$vg_month ,$vg_year);
+   $vg_start_sec = $vg_period_start_sec;
+} else {
+   # Asked for help?
+   if($vg_month =~ /[Hh]elp/){
+      print "Syntax: ppp [Numeric month] [numeric day]\n";
+      print "Example: ppp 10 31\n";
+      exit 0;
+   }
+   # Correction of month argument
+   $vg_month--;
+   $vg_start_sec = timelocal(0, 0, 0, $vg_day, $vg_month, $vg_year);
+}
+
+# -----------------------
+# Open file handles
+# -----------------------
+# Open ppp log file for reading
+open(PPP, "<$vg_pppfile") or die "Can't open file '$vg_pppfile'!\n";
+
+# Loop through all lines of the file
+while(<PPP>){
+   # Search for lines containing "Sent"
+   if(/Sent/){
+      # Read this line into an array
+      @vg_line = split(/\s{1,}/, "$_");
+      # time has to be read seperately into an array
+      ($vg_hours,$vg_min,$vg_sec)=split(/:/,$vg_line[3]);
+      # Convert that time to seconds for comparison
+      $vg_line_sec = timelocal($vg_sec, $vg_min, $vg_hours, $vg_line[2],
+                               $hg_month{$vg_line[1]}, $vg_line[4]);
+      # Check if that time is after start time
+      if($vg_line_sec >= $vg_start_sec){
+         # Get the sent and received bytes
+         /Sent\s{1,}(\d+).+received\s{1,}(\d+)/;
+         # Add them to the whole traffic
+         $vg_traffic += $1 + $2;      
+      }
+   }
+}
+
+# -----------------------
+# Close file handles
+# -----------------------
+# Close file handle again
+close(PPP);
+
+# Convert the bytes into megabytes
+$vg_traffic /= 1024 * 1024;
+
+# -----------------------
+# Start of output
+# -----------------------
+# Last but not least the output
+print   "Von: ".localtime($vg_start_sec)."\n";
+print   "bis: ".localtime($vg_cur_sec)."\n";
+printf ("\nGesamt-Traffic:    %7.2f MB\n\n", $vg_traffic);
+printf ("Monatliches Limit: %7.2f MB\n", $vg_limit);
+# Approximate days per month basis
+$vg_limit /= 30;
+printf ("Pro Tag:           %7.2f MB \n", $vg_limit);
+    
+# ==============================================================================
+# EOF

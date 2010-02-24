@@ -1,0 +1,11 @@
+#!/usr/bin/perl
+
+use warnings;
+use strict;
+use Tk;
+
+my $main_window=MainWindow->new();
+$main_window->title("mein erstes perl tk beispiel");
+$main_window->Button(-text=>"Ende",-command=>sub{exit})->pack(-side=>'left');
+MainLoop();
+

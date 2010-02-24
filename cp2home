@@ -1,0 +1,15 @@
+#!/bin/sh
+#
+# usefule find grep!
+if [ $# -lt 2 ]
+then
+   echo
+   echo "Usage: cp2fh <remote file(s)> <local dir>"
+   echo "remote file(s) are at home: ~/<dir(s)/file>"
+   echo
+   exit
+else
+   scp in17284@141.75.164.133:~/$1 $2
+fi
+
+

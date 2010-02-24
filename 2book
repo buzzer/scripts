@@ -1,0 +1,61 @@
+#!/bin/sh
+#
+#Postskript Manipulations HowTo
+#
+#   F<FC>r alle, die "man" nicht m<F6>gen. :-)
+#
+#Aus einem DIN A4 Dokument ein Buch machen
+#
+#Problem
+#
+#   Eine Dokument das als Postskript Datei im DIN A4 Format vorliegt, soll
+#   so umgewandelt werden, dass danach die Seiten wie in einem Buch
+#   angeordnet sind.
+#
+#L<F6>sung
+#
+if [ $# -lt 2 ]
+then
+   echo
+   echo "Usage: 2book <source file> <target file>"
+   echo
+   exit
+else
+   psbook "$1" "$2"
+   ps2pdf "$2"
+   rm "$2"
+fi
+#
+#   psbook ist ein Linux Programm und im Paket psutils enthalten.
+#
+#DIN A4 auf DIN A5
+#
+#Problem
+#
+#   Eine Dokument das als Postskript Datei im DIN A4 Format vorliegt, soll
+#   so umgewandelt werden, dass die einzelnen Seiten auf DIN A5
+#   verkleinert werden und nebeneinander auf eine Seite passen.
+#
+#L<F6>sung
+#
+#   pstops "2:0L@.7(21cm,0)+1L@.7(21cm,14.85cm)" "$2.tmp" "$2"
+#
+#   oder wahlweise
+#
+#   psnup -n2 Quelldatei.ps Zieldatei.ps
+#
+#   pstops ist ein Linux Programm und im Paket psutils enthalten.
+#
+#DIN A4 zu einem DIN A5 Buch
+#
+#Problem
+#
+#   Ein Dokument das als Postskript Datei im DIN A4 Format vorliegt, soll
+#   zu einem DIN A5 Buch umgewandelt werden.
+#
+#L<F6>sung
+#
+#   Einfach die obigen Schritte hintereinander ausf<FC>hren, aber beim
+#   Ausdrucken auf die Druckereinstellung achten! Es muss muplex
+#   eingestellt werden. Oder aber man l<E4>sst pstops die Seiten drehen!
+#

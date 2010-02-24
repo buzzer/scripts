@@ -1,0 +1,12 @@
+#!/bin/sh
+#
+# Compact an encrypted image
+if [ $# -lt 1 ]
+then
+   echo
+   echo "Usage: icompact \"<name.sparseimage>\" -> quotation marks(\") are mandatory!"
+   echo
+   exit
+else
+   hdiutil compact $1
+fi

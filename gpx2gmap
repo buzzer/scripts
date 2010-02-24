@@ -1,0 +1,53 @@
+#!/usr/bin/perl
+# Convert a GPX formated file to a Google Map html link
+# Sebastian Rockel
+#
+# V0.1 | 2009-03-25 
+# -----------------
+# Tracks and Waypoints are ignored.
+# Several Routes in 1 file are recognized.
+# Limit overall amount of route points to Google allowd (today: 25)
+#
+use warnings;
+use strict;
+
+# Geo::Gpx is a Perl module to create and parse GPX files.
+# For more information for use see 'perldoc Geo::Gpx'
+use Geo::Gpx;
+
+# Google limit for route points
+my $maxPt = 24;
+
+# Google Url start
+my $gmapUrl="http://maps.google.de/maps?f=d&saddr=";
+
+# Open GPX file
+my $fpath = shift ||  die "You have to specify a '.gpx' file as argument!";
+
+open (my $fh, '<', $fpath) || die "Cannot open file $fpath: $!";
+
+# Parse GPX from open file
+my $gpx = Geo::Gpx->new( input => $fh );
+
+# Get an iterator that visits all the route points in a "Geo::Gpx".
+my $iter = $gpx->iterate_routepoints();
+
+my $count = -1;
+
+while ( (my $pt = $iter->()) && ($maxPt > $count) ){
+    $count++;
+    if (0 == $count){
+        $gmapUrl.=join(',', $pt->{lat}, $pt->{lon})."&daddr=";
+    } elsif (1 == $count){
+        $gmapUrl.=join(',', $pt->{lat}, $pt->{lon});
+    } else {
+        $gmapUrl.="+to:".join(',', $pt->{lat}, $pt->{lon});
+    }
+}
+# Keep for debugging
+#print $gmapUrl, "\n";
+
+# Open Browser
+system ("open /Applications/Firefox.app \"$gmapUrl\"");
+
+exit 0;

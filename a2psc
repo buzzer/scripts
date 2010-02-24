@@ -1,0 +1,17 @@
+#!/bin/sh
+#
+# usefule find grep!
+if [ $# -lt 1 ]
+then
+   echo
+   echo "Usage: a2psc \"<src file(s)>\" -> quotation marks(\") are mandatory!"
+   echo
+   exit
+else
+   a2ps --highlight-level=heavy --prologue=color --medium=a4 --line-numbers=1 -1 $1 -o a2psOut.ps
+fi
+
+# --highlight-level=heavy        cooles layout ;-)
+# --no-header                    no header;)
+# --toc                          Table of contents/files
+# -1                             one page per sheet

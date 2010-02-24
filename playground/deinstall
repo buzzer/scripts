@@ -1,0 +1,5 @@
+#!/opt/local/bin/perl -MExtUtils::Installed
+
+ $installed = ExtUtils::Installed->new; 
+ my $pl = $installed->packlist($ARGV[0])->packlist_file();
+ uninstall($pl, 1, 0);

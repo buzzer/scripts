@@ -1,0 +1,15 @@
+#!/bin/bash
+
+echo "-------------------------------------"
+echo " Downloading latest guarding filters"
+echo "-------------------------------------"
+#nice -n 19 guarding -p2p
+nice -n 19 guarding -all
+
+echo
+echo "-------------------------------------"
+echo " Starting mldonkey"
+echo "-------------------------------------"
+nice -n 19 mlnet &
+
+exit 0

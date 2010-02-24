@@ -1,0 +1,27 @@
+#!/bin/bash
+
+set -x
+
+oriLyxPath="/Applications/LyX.app/Contents/Resources/templates"
+oriLyxBasePath="/Applications/LyX.app/Contents/Resources"
+backupfile="$oriLyxBasePath/templates.tar.zip"
+homeTemplPath="/Users/sebastian/Documents/_Vorlagen/LyxTemplates"
+
+# Wenn es ein Verz. gibt, lösche ein evtl. vorhandenes backupfile
+# und erstelle ein aktuelles Backup
+[ -L $oriLyxPath ] || ( 
+                        [ -f $backupfile ] && rm -f $backupfile
+# Wenn Verz. kein SLink ist, lege ein neues backup file an
+                        tar -czf $backupfile "$oriLyxPath"
+                      )
+
+# Wenn noch kein Lyx template Verz. existiert kopiere es
+[ -d $homeTemplPath ] ||  (
+                           cp -r $oriLyxPath $homeTemplPath && \
+# Lösche das original Verz.
+                           rm -fr $oriLyxPath && \
+# Erstelle symbolischen Link
+                           ln -s $homeTemplPath $oriLyxPath
+                          )
+
+exit 0;

@@ -1,0 +1,15 @@
+#!/bin/sh
+# needs root right, "sudo"
+# sets the g++ suit to argument given version
+
+unlink /usr/bin/gcc
+unlink /usr/bin/g++
+unlink /usr/bin/cc
+unlink /usr/bin/c++
+unlink /usr/bin/gcov
+
+ln -s /usr/bin/gcc-$1  /usr/bin/gcc
+ln -s /usr/bin/g++-$1  /usr/bin/g++
+ln -s /usr/bin/gcc-$1  /usr/bin/cc
+ln -s /usr/bin/c++-$1  /usr/bin/c++
+ln -s /usr/bin/gcov-$1 /usr/bin/gcov

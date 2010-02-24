@@ -1,0 +1,150 @@
+#!/bin/bash 
+# 
+#-------------------------------------------------------------------------------- 
+#pg4mld, Copyright spamsuxx 
+#-------------------------------------------------------------------------------- 
+#This program is free software; you can redistribute it and/or modify 
+#it under the terms of the GNU General Public License as published by 
+#the Free Software Foundation; either version 2 of the License, or 
+#(at your option) any later version. 
+# 
+#This program is distributed in the hope that it will be useful, 
+#but WITHOUT ANY WARRANTY; without even the implied warranty of 
+#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the 
+#GNU General Public License for more details. 
+# 
+#To view the license visit 
+#http://www.gnu.org/licenses/old-licenses/gpl-2.0.html 
+#or write to 
+#Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA 
+#-------------------------------------------------------------------------------- 
+#-------------------------------------------------------------------------------- 
+# 
+#IP blacklist refresh script based on 
+#http://peerguardian.sourceforge.net lists 
+#for mldonkey, to keep spammers, ads, porn 
+#and other nasty stuff away from the donkey 
+# 
+#!Don't abuse the P2P network! 
+# 
+
+# Homedir of your mldonkey 
+DONKEYHOME="/Users/sebastian/.mldonkey" 
+
+# Where in the homedir should the lists be stored? 
+STORDIR="blocklists" 
+
+# Please enter your Admin user and Password for this user 
+ADMIN="admin" 
+PASSWORD="PASSWORD" 
+
+
+##               ## 
+#No need to edit anything below this# 
+##               ## 
+
+
+# Some Variables that my cahnge during time 
+LISTURL="http://peerguardian.sourceforge.net/lists" 
+
+ADSPHP="ads.php" 
+EDUPHP="edu.php" 
+P2PPHP="p2p.php" 
+SPYPHP="spy.php" 
+
+ADS7z=ads-trackers-and-bad-pr0n.7z 
+EDU7z=edu.7z 
+P2P7z=level1.7z 
+SPY7z=spyware.7z 
+
+LISTDIR="$DONKEYHOME/$STORDIR" 
+
+# Set path of the required apps 
+NC=`which nc` 
+WGET=`which wget` 
+SEVENZ=`which 7z` 
+
+# Check if the soreage dir for the lists exists or is a file 
+if [[ -e $LISTDIR && ! -d $LISTDIR ]] ; then 
+   echo -e "A file with the name \"$LISTDIR\" exist.\n Please choose another name for the lists storage directory" 
+   exit 1 
+else 
+   mkdir -p $LISTDIR 
+fi 
+
+# Jump to correct location 
+cd $LISTDIR 
+
+if [[ -z "$SEVENZ" ]] ; then 
+      echo "you need to install 7zip" 
+      exit 1 
+   elif [[ -z "$NC" ]] ; then 
+      echo "You need to install NetCat (nc)" 
+      exit 1 
+   elif [[ -z "$WGET" ]] ; then 
+      echo "You need to install wget" 
+      exit 1 
+fi 
+
+
+# Fetch only the files if they are newer than the local files 
+function FETCH { 
+   for (( j = 0 ; "$j" < ${#FETCHURLS[@]} ; j++ )) ; do 
+      $WGET -q --no-dns-cache --timeout=10 -N -P $LISTDIR ${FETCHURLS[$j]} || echo "Could not download ${FETCHURLS[$j]}" 
+   done 
+} 
+
+# Unpack everything in the $LISTDIR and combine the selected list into one large list (combined.txt) 
+function UN7 { 
+   cd $LISTDIR 
+   rm -f combined.txt 
+   for i in *.7z ; do 
+      $SEVENZ e -bd $i -so >> combined.txt 2>/dev/null || echo "Could not unzip $i" 
+   done 
+} 
+
+# Notify the donkey of the new blocklist 
+function UPDATEED { 
+   if $NC -z localhost 4003 >/dev/null 2>&1 ; then 
+$NC localhost 4003 >/dev/null 2>&1
+auth $ADMIN $PASSWORD 
+set ip_blocking $LISTDIR/combined.txt 
+q 
+   fi 
+} 
+
+# Cleanout files if user wants it 
+function CLEANALL { 
+   cd $LISTDIR && rm -f *.7z 
+} 
+
+# Check the parameters 
+function MENU { 
+   CLEAN="NO" 
+
+   if [[ "$#" == "0" ]] ; then 
+      echo "use --help to get more info" 
+      exit 0 
+   fi 
+
+   while [ $# -gt 0 ]; do 
+      case "$1" in 
+         -ads) ADSURL="$LISTURL/$ADSPHP" ; FETCHURLS=( $ADSURL $EDUURL $P2PURL $SPYURL ) ;; 
+         -edu) EDUURL="$LISTURL/$EDUPHP" ; FETCHURLS=( $ADSURL $EDUURL $P2PURL $SPYURL ) ;; 
+         -p2p) P2PURL="$LISTURL/$P2PPHP" ; FETCHURLS=( $ADSURL $EDUURL $P2PURL $SPYURL ) ;; 
+         -spy) SPYURL="$LISTURL/$SPYPHP" ; FETCHURLS=( $ADSURL $EDUURL $P2PURL $SPYURL ) ;; 
+         -all) ADSURL="$LISTURL/$ADSPHP" ; EDUURL="$LISTURL/$EDUPHP" ; P2PURL="$LISTURL/$P2PPHP" ; SPYURL="$LISTURL/$SPYPHP" ; FETCHURLS=( $ADSURL $EDUURL $P2PURL $SPYURL ) ;; 
+         -clean) CLEAN="YES" ;; 
+         *|"") echo -e "USAGE: peerguardian.sh {-ads|-edu|-SPY|-all|-clean}\nUse the switches to aktivate one or more list:\n-ads) ADS, trackers and bad porn\n-edu) EDU\n-p2p) P2P\n-spy) SPY\n-all) Select all lists at once\n-clean) Remove all previously downloaded lists\n        Please use this if you installed 2 or\n        more lists and now want to use another combination of list" ; exit 0 ;; 
+      esac 
+      shift   # Check next set of parameters. 
+   done 
+   if [[ "$CLEAN" == "YES" ]] ; then CLEANALL ; fi 
+   FETCH 
+   UN7 
+#   UPDATEED 
+} 
+
+# Let's get it running. 
+MENU $@ 
+

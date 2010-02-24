@@ -1,0 +1,4 @@
+#!/bin/bash
+# embed all fonts inside the pdf
+
+ps2pdf14 -dPDFSETTINGS=/prepress -dEmbedAllFonts=true diplomab.ps 

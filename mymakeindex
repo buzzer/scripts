@@ -1,0 +1,18 @@
+#!/bin/sh
+#
+# makeindex
+# to create glossary
+# for nomencl latex package
+##############################
+if [ $# -lt 1 ]
+then
+   echo
+   echo "Usage: mi <YourFileWITHOUTEnding>"
+   echo
+   exit
+else
+   makeindex $1.glo -s nomencl.ist -o $1.gls
+   pdflatex $1.tex
+#  xpdf $1.pdf &
+fi
+

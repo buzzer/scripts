@@ -1,0 +1,53 @@
+#!/usr/bin/perl
+# Looks for more than one route in .gpx file an creates seperate files.
+# Each route in one file
+# Sebastian Rockel
+#
+# V0.1 | 2009-04-03
+# -----------------
+# Tracks and Waypoints are ignored.
+# Several Routes in 1 file are recognized.
+#
+use warnings;
+use strict;
+
+# Geo::Gpx is a Perl module to create and parse GPX files.
+# For more information for use see 'perldoc Geo::Gpx'
+use Geo::Gpx;
+
+my $outpath = "test.gpx";
+
+# Open GPX file
+my $fpath = shift ||  die "You have to specify a '.gpx' file as argument!";
+open (my $fh, '<', $fpath) || die "Cannot open file $fpath: $!";
+
+# Parse GPX from open file
+my $gpxin = Geo::Gpx->new( input => $fh );
+my $routes = $gpxin->routes();
+my $wpts = $gpxin->waypoints();
+
+print "Routes: $routes\n";
+print "Waypoints: $wpts\n";
+
+# Loop through routes and route points
+
+# Create new gpx file
+open (my $out, '>', $outpath) || die "Cannot create file $outpath: $!";
+
+# Generate new GPX data structure
+my $gpxout = Geo::Gpx->new(output => $out);
+# Omitting the version sets it to 'version' from parsed gpx file
+my $gpx11 = $gpxout->xml('1.0');
+#$gpx−>waypoints(\@wpt);
+$gpxout->routes($routes);
+$gpxout->waypoints($wpts);
+
+
+
+# Save new route structure in seperate file
+
+
+close ($fh);
+close ($out);
+
+exit 0;
