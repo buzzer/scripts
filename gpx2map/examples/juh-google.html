@@ -1,0 +1,282 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+ <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <title>juh</title>
+    <style type="text/css">
+         html, body {height: 100%}   <!-- Required for strict Doctype, otherwise map is zero size -->
+    </style>
+    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+    <script type="text/javascript">
+    //<![CDATA[
+
+    function load() {
+      // *** Map Itself
+     var center_point = new google.maps.LatLng(54.669985771, 13.410079479);
+     var mapOptions = {
+      zoom: 9,
+      center:  center_point,
+      scaleControl: true,                        // Distance scale enabled
+      mapTypeId: google.maps.MapTypeId.HYBRID    // Hybrid Map Display
+       // Mini-Map not yet supported in v3 (as of Oct. 2009)
+     };
+     var map = new google.maps.Map(document.getElementById("mapContainer"), mapOptions);
+
+     // *** Track points
+     var point = new google.maps.LatLng(54.669985771, 13.410079479);
+     var marker0 = new google.maps.Marker({
+      position: point, 
+      map: map, 
+      icon: "http://www.google.com/mapfiles/markerS.png",
+      title:"0.00 km, Height: -22m, Start Point"
+      });   
+    
+     var point = new google.maps.LatLng(54.667003155, 13.429713249);
+     var marker1 = new google.maps.Marker({
+      position: point, 
+      map: map, 
+      title:"2.02 km, Height: 18m"
+      });   
+    
+     var point = new google.maps.LatLng(54.677689075, 13.435184956);
+     var marker2 = new google.maps.Marker({
+      position: point, 
+      map: map, 
+      title:"4.03 km, Height: 41m"
+      });   
+    
+     var point = new google.maps.LatLng(54.663226604, 13.431129456);
+     var marker3 = new google.maps.Marker({
+      position: point, 
+      map: map, 
+      title:"6.14 km, Height: -3m"
+      });   
+    
+     var point = new google.maps.LatLng(54.654729366, 13.403706551);
+     var marker4 = new google.maps.Marker({
+      position: point, 
+      map: map, 
+      title:"8.31 km, Height: -4m"
+      });   
+    
+     var point = new google.maps.LatLng(54.642627239, 13.381390572);
+     var marker5 = new google.maps.Marker({
+      position: point, 
+      map: map, 
+      title:"10.42 km, Height: -4m"
+      });   
+    
+     var point = new google.maps.LatLng(54.624388218, 13.377828598);
+     var marker6 = new google.maps.Marker({
+      position: point, 
+      map: map, 
+      title:"12.51 km, Height: -4m"
+      });   
+    
+     var point = new google.maps.LatLng(54.615590572, 13.379673958);
+     var marker7 = new google.maps.Marker({
+      position: point, 
+      map: map, 
+      icon: "http://www.google.com/mapfiles/markerE.png",
+      title:"13.61km, Height: 1m, End Point"
+      });   
+    
+
+    // *** Map Line
+    var track_points = [
+     new google.maps.LatLng(54.669985771, 13.410079479),
+     new google.maps.LatLng(54.670221806, 13.410186768),
+     new google.maps.LatLng(54.670135975, 13.410422802),
+     new google.maps.LatLng(54.671144485, 13.412032127),
+     new google.maps.LatLng(54.671895504, 13.412654400),
+     new google.maps.LatLng(54.672174454, 13.413083553),
+     new google.maps.LatLng(54.672710896, 13.415336609),
+     new google.maps.LatLng(54.672646523, 13.415529728),
+     new google.maps.LatLng(54.672303200, 13.415808678),
+     new google.maps.LatLng(54.672238827, 13.416044712),
+     new google.maps.LatLng(54.672346115, 13.416430950),
+     new google.maps.LatLng(54.672625065, 13.416237831),
+     new google.maps.LatLng(54.672646523, 13.416516781),
+     new google.maps.LatLng(54.672667980, 13.416194916),
+     new google.maps.LatLng(54.672753811, 13.416216373),
+     new google.maps.LatLng(54.672882557, 13.417117596),
+     new google.maps.LatLng(54.672989845, 13.417117596),
+     new google.maps.LatLng(54.673526287, 13.419113159),
+     new google.maps.LatLng(54.672389030, 13.421516418),
+     new google.maps.LatLng(54.671444893, 13.423125744),
+     new google.maps.LatLng(54.670650959, 13.424992561),
+     new google.maps.LatLng(54.670221806, 13.425571918),
+     new google.maps.LatLng(54.669449329, 13.425850868),
+     new google.maps.LatLng(54.667904377, 13.427267075),
+     new google.maps.LatLng(54.667174816, 13.428704739),
+     new google.maps.LatLng(54.667024612, 13.429262638),
+     new google.maps.LatLng(54.667088985, 13.429820538),
+     new google.maps.LatLng(54.666638374, 13.429927826),
+     new google.maps.LatLng(54.667003155, 13.429713249),
+     new google.maps.LatLng(54.666767120, 13.430314064),
+     new google.maps.LatLng(54.665951729, 13.430314064),
+     new google.maps.LatLng(54.665522575, 13.430657387),
+     new google.maps.LatLng(54.665951729, 13.430614471),
+     new google.maps.LatLng(54.666059017, 13.431022167),
+     new google.maps.LatLng(54.666037560, 13.431322575),
+     new google.maps.LatLng(54.665780067, 13.431730270),
+     new google.maps.LatLng(54.665865898, 13.432116508),
+     new google.maps.LatLng(54.665694237, 13.432846069),
+     new google.maps.LatLng(54.665672779, 13.432738781),
+     new google.maps.LatLng(54.665951729, 13.432524204),
+     new google.maps.LatLng(54.666037560, 13.432288170),
+     new google.maps.LatLng(54.665973186, 13.432567120),
+     new google.maps.LatLng(54.666209221, 13.432137966),
+     new google.maps.LatLng(54.667088985, 13.432395458),
+     new google.maps.LatLng(54.668505192, 13.431880474),
+     new google.maps.LatLng(54.669642448, 13.432009220),
+     new google.maps.LatLng(54.670329094, 13.431773186),
+     new google.maps.LatLng(54.670479298, 13.432030678),
+     new google.maps.LatLng(54.671745300, 13.432459831),
+     new google.maps.LatLng(54.672775269, 13.433275223),
+     new google.maps.LatLng(54.674363136, 13.433554173),
+     new google.maps.LatLng(54.674255848, 13.434133530),
+     new google.maps.LatLng(54.674620628, 13.434648514),
+     new google.maps.LatLng(54.674491882, 13.434734344),
+     new google.maps.LatLng(54.674663544, 13.434948921),
+     new google.maps.LatLng(54.674856663, 13.434906006),
+     new google.maps.LatLng(54.674792290, 13.434648514),
+     new google.maps.LatLng(54.675221443, 13.434519768),
+     new google.maps.LatLng(54.675221443, 13.434755802),
+     new google.maps.LatLng(54.675500393, 13.435249329),
+     new google.maps.LatLng(54.676959515, 13.435506821),
+     new google.maps.LatLng(54.677560329, 13.435893059),
+     new google.maps.LatLng(54.677689075, 13.435184956),
+     new google.maps.LatLng(54.678375721, 13.434112072),
+     new google.maps.LatLng(54.678268433, 13.435249329),
+     new google.maps.LatLng(54.678504467, 13.435120583),
+     new google.maps.LatLng(54.677796364, 13.436150551),
+     new google.maps.LatLng(54.677174091, 13.435356617),
+     new google.maps.LatLng(54.675650597, 13.435184956),
+     new google.maps.LatLng(54.675393105, 13.434906006),
+     new google.maps.LatLng(54.675157070, 13.434262276),
+     new google.maps.LatLng(54.674427509, 13.433554173),
+     new google.maps.LatLng(54.674170017, 13.432760239),
+     new google.maps.LatLng(54.673676491, 13.432245255),
+     new google.maps.LatLng(54.670414925, 13.430893421),
+     new google.maps.LatLng(54.669964314, 13.431043625),
+     new google.maps.LatLng(54.669814110, 13.431344032),
+     new google.maps.LatLng(54.669449329, 13.431043625),
+     new google.maps.LatLng(54.668290615, 13.431172371),
+     new google.maps.LatLng(54.666895866, 13.431816101),
+     new google.maps.LatLng(54.666252136, 13.431794643),
+     new google.maps.LatLng(54.665930271, 13.431472778),
+     new google.maps.LatLng(54.665758610, 13.432309628),
+     new google.maps.LatLng(54.665350914, 13.432438374),
+     new google.maps.LatLng(54.663226604, 13.431129456),
+     new google.maps.LatLng(54.663054943, 13.430764675),
+     new google.maps.LatLng(54.661531448, 13.429305553),
+     new google.maps.LatLng(54.661552906, 13.428962231),
+     new google.maps.LatLng(54.660909176, 13.428597450),
+     new google.maps.LatLng(54.660394192, 13.427803516),
+     new google.maps.LatLng(54.659857750, 13.427309990),
+     new google.maps.LatLng(54.659020901, 13.424756527),
+     new google.maps.LatLng(54.658613205, 13.424220085),
+     new google.maps.LatLng(54.657132626, 13.421452045),
+     new google.maps.LatLng(54.656767845, 13.421022892),
+     new google.maps.LatLng(54.656381607, 13.417375088),
+     new google.maps.LatLng(54.656209946, 13.416881561),
+     new google.maps.LatLng(54.655501842, 13.415787220),
+     new google.maps.LatLng(54.655351639, 13.409585953),
+     new google.maps.LatLng(54.654922485, 13.406753540),
+     new google.maps.LatLng(54.654729366, 13.403706551),
+     new google.maps.LatLng(54.654321671, 13.401474953),
+     new google.maps.LatLng(54.652841091, 13.397505283),
+     new google.maps.LatLng(54.652540684, 13.394265175),
+     new google.maps.LatLng(54.652090073, 13.392462730),
+     new google.maps.LatLng(54.651124477, 13.389673233),
+     new google.maps.LatLng(54.650695324, 13.389050961),
+     new google.maps.LatLng(54.650180340, 13.387870789),
+     new google.maps.LatLng(54.649193287, 13.386433125),
+     new google.maps.LatLng(54.647519588, 13.384587765),
+     new google.maps.LatLng(54.645266533, 13.382849693),
+     new google.maps.LatLng(54.642627239, 13.381390572),
+     new google.maps.LatLng(54.641017914, 13.379909992),
+     new google.maps.LatLng(54.639151096, 13.379094601),
+     new google.maps.LatLng(54.637477398, 13.378043175),
+     new google.maps.LatLng(54.637048244, 13.377463818),
+     new google.maps.LatLng(54.636447430, 13.376991749),
+     new google.maps.LatLng(54.635610580, 13.376648426),
+     new google.maps.LatLng(54.632306099, 13.376584053),
+     new google.maps.LatLng(54.624388218, 13.377828598),
+     new google.maps.LatLng(54.615762234, 13.381261826),
+     new google.maps.LatLng(54.615612030, 13.381047249),
+     new google.maps.LatLng(54.615526199, 13.380274773),
+     new google.maps.LatLng(54.615590572, 13.379673958)
+    ];
+    // Add line to map, points, color, width in pixel, transparency
+    var track = new google.maps.Polyline({
+      path: track_points,
+      strokeColor: "#F02000",
+      strokeOpacity: 0.7,
+      strokeWeight: 3
+    });
+   track.setMap(map);
+
+  }
+
+  function set_size() {
+       // Update size of map element to fill browser window
+    if (document.getElementById) {   // When element is available then reposition
+       // Update width to window height
+       document.getElementById("mapContainer").style.width = (window.innerWidth - 30) + "px";
+       // Update height to window height
+       var height = window.innerHeight;   // Start with window height
+       height = height - document.getElementById("mapContainer").offsetTop;  // substract start of window element
+       document.getElementById("mapContainer").style.height = (height - 10) + "px";   // Update element
+    }
+    // else: Use MS-Only method for older IE versions (not implemented)
+  }
+
+  // Register set_size to be executed every time the browser window size is changed
+  if ( window.addEventListener ) {   // when modern listener method is supported
+     window.addEventListener ("resize", set_size, false);
+  } else if (window.captureEvents ) {  // otherwise try older version
+     window.captureEvents(Event.RESIZE);
+     window.onresize = set_size;
+  } else if (window.attachEvent) {      // at last try MSIE special version
+     object.attachEvent("onresize", set_size);
+  }
+  //]]>
+  </script>
+</head>
+
+<body onload="load(); set_size();">
+
+  <h1><a name="toplocation">juh</a></h1>
+
+  <table style="width:100%;border-width:0px;">
+  <tr>
+  <td style="text-align:left;">Distance is 13.61km</td>
+  <td style="text-align:left;"><a href="#addinfos">Additional Information</a></td>
+  <td style="text-align:right;">created with <a href="http://sethdepot.org/gpx2map/">gpx2map</a></td>
+  </tr>
+  </table>
+
+  <div id="mapContainer" style="width:100%; height:80%"></div>
+
+    <h2><a name="addinfos">Additional Information</a></h2>
+
+    <div><a href="#toplocation">Back to top</a></div>
+
+
+    <ul>
+      <li>Hover over markers for distance from start and height</li>
+      <li>Accumulated Ascend: 60 m</li>
+      <li>Accumulated Descend: 28 m</li>
+    </ul>
+
+  <!-- Height Display -->
+  <div  style="text-align:center">
+     <img alt="Height Profile" src="juh-juh.png" />
+  </div>
+
+</body>
+</html>

@@ -1,17 +1,17 @@
 <!-- mit Stylesheets -->
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN"
-"http://www.w3.org/TR/REC-html40/strict.dtd">
+"http://www.w3.org/TR/1998/REC-html40-19980424/strict.dtd">
 
 <html>
 <!-- META f&uuml;r Suchdienste -->
-<meta name="description" content="gpx2map converts gps tracks to google or yahoo maps overlays">
+<meta name="description" content="gpx2map converts gps tracks to google or yahoo or openstreetmaps map overlays">
 <meta name="author" content="Robert Lange">
-<meta name="keywords" content="gpx2map, gps, gpx, gpsbabel, google maps, yahoo maps, gps track">
-<meta name="date" content="2007-12-01">
+<meta name="keywords" content="gpx2map, gps, gpx, gpsbabel, google maps, yahoo maps, openstreetmaps, osm, gps track">
+<meta name="date" content="2009-10-20">
 <!-- META f&uuml;r Browser -->
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta http-equiv="Content-Style-Type" content="text/css">
-<title>gpx2map rev. 326</title>
+<title>gpx2map rev. 340</title>
 </head>
 
 
@@ -19,14 +19,14 @@
 
 
 <h1 style="text-align:center">gpx2map<br>
-rev. 326</h1>
+rev. 340</h1>
 
 
 
 <h2>Download</h2>
 
 <p>Get latest version:
-<a href="gpx2map_0.326.tar.bz2">gpx2map rev. 326</a>
+<a href="gpx2map_0.340.tar.bz2">gpx2map rev. 340</a>
 </p>
 
 <p>
@@ -39,8 +39,11 @@ rev. 326</h1>
 			  <h2>Overview</h2>
 
 <p>gpx2map reads a gps track in GPX format (as produced by
-e.g. <a href="http://www.gpsbabel.org/">gpsbabel</a>) and writes out an Google or Yahoo Map Mash-up containing
-the route.</p>
+e.g. <a href="http://www.gpsbabel.org/">gpsbabel</a>) and writes out an
+<a href="http://maps.google.com">Google Map</a>, 
+a <a href="http://maps.yahoo.com">Yahoo Map</a>
+or <a href="http://openstreetmaps.org">OpenStreetMaps</a>
+mash-up containing the route and a height profile.</p>
 
 <p>It comes very handy when you e.g. own an
 <a href="http://garmin.de/outdoor/produktbeschreibung/etrex_h/">Garmin eTrex</a>
@@ -59,7 +62,7 @@ in GPX format and let gpx2map write out an map overlay for you.</p>
 
 <pre>
     gpx2map
-    Copyright (C) 2007,2008 Robert Lange
+    Copyright (C) 2007-2009 Robert Lange
     robert.lange@s1999.tu-chemnitz.de
 
     This program is free software; you can redistribute it and/or modify
@@ -87,10 +90,11 @@ The CPAN-Modules can be found at <a href="http://search.cpan.org">http://search.
 </p>
 
 <ul>
-  <li>Perl 5, tested with version 5.8.8</li>
-  <li>CPAN XML::Twig (debian packet libxml-twig-perl), tested with version 1:3.26-2</li>
-  <li>CPAN Template (debian packet libtemplate-perl), tested with version 2.14-1</li>
+  <li>Perl 5, tested with versions 5.8.8, 5.10.0</li>
+  <li>CPAN XML::Twig (debian packet libxml-twig-perl), tested with versions 1:3.26-2, 1:3.32-1</li>
+  <li>CPAN Template (debian packet libtemplate-perl), tested with versions 2.14-1, 2.19-1</li>
   <li>CPAN Geo::Distance, tested with version 2.11</li>
+  <li>Optional CPAN Chart::Gnuplot, tested with version 0.10-1</li>
 </ul>
 
 <p>For Geo::Distance no pre-packaged version was available at the time of
@@ -100,6 +104,9 @@ is searched in the directory <code>cpan/</code> below the executable.
 When you have Geo::Distance installed at your system then you can safely
 delete the directory cpan/ in the distribution.</p>
 
+<p>Chart::Gnuplot is required for drawing the height graph. When you don't
+want to use this feature this package is not needed.</p>
+
 <p>gpx2map is likely to work also with other versions than the
 one mentioned here. When you encounter problems just
 drop me a note.</p>
@@ -108,8 +115,8 @@ drop me a note.</p>
 <h2>Installation</h2>
 
 <p>Just copy (or link) the file <code>gpx2map</code> into your path or any place you like.<br>
-Put the mash-up template files <code>gpx2map.google.template</code> and and
-<code>gpx2map.yahoo.template</code>
+Put the mash-up template files <code>gpx2map.google.template</code>,
+ <code>gpx2map.osm.template</code> and <code>gpx2map.yahoo.template</code>
 where you put gpx2map itself (not to the link, in case you linked it).
 </p>
 
@@ -118,8 +125,9 @@ you also need to place the sub-directory <code>cpan/</code> below
 the location you put <code>gpx2map</code> into. See also section <a href="#req">Requirements</a>.
 </p>
 
-<p>Finally, you need to configure gpx2map to use your own Google and/or Yahoo Maps API
-key, otherwise you won't be able to see your route pages online.
+<p>Finally, you need to configure gpx2map to use your own Yahoo Maps API
+key in case you really want to use the Yahoo Maps Interface (which is currently
+broken anyway). Otherwise you won't be able to see your route pages online.
 See section <a href="#apikeys">Configuration</a>.</p>
 
 
@@ -131,8 +139,8 @@ You can get this e.g. by
 <a href="http://www.gpsbabel.org/">gpsbabel</a> (gpx2map includes a shortcut for calling
 <a href="http://www.gpsbabel.org/">gpsbabel</a>).<br>
 gpx2map then reads the <a href="http://www.topografix.com/gpx.asp">GPX</a> file
-and writes out
-a html page containing either an Yahoo or Google maps mash-up.</p>
+and writes out a html page containing either an Google,
+OpenStreetMaps or Yahoo Map mash-up.</p>
 
 <p>An <a href="http://www.topografix.com/gpx.asp">GPX</a> file can contain several
 tracks. 
@@ -143,8 +151,8 @@ together or create one html file for each track.</p>
 			   <h2>Program Options</h2>
 
 <p><samp>
-     gpx2map [--help|-h] [--version|-V] [--route|-r route]<br>
-     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;           [--title|-t title] [--merge] [--yahoo|-y]  inputfile
+     gpx2map [--help|-h] [--version|-V] [--route|-r route] [--merge]<br>
+             [--title|-t title] [--osm|-o] [--yahoo|-y] [--[no]height] inputfile
 </samp></p>
 
 <table>
@@ -152,7 +160,9 @@ together or create one html file for each track.</p>
 <tr><td>--help, -h</td>                <td>Help screen</td></tr>
 <tr><td>--version, -V</td>             <td>Version</td></tr>
 
-<tr><td>--yahoo, -y</td>                <td>Create Yahoo Mash-Up</td></tr>
+<tr><td>--osm, -o</td>          <td>Create OpenStreetMaps Mash-Up</td></tr>
+<tr><td>--yahoo, -y</td>        <td>Create Yahoo Mash-Up (currently broken)</td></tr>
+<tr><td></td>                   <td>Default is Google Mash-Up</td></tr>
 
 <tr><td>--title, -t &lt;title&gt;</td>  <td>Title of web page, when not specified
                            use route name (or leave empty)</td></tr>
@@ -161,13 +171,14 @@ together or create one html file for each track.</p>
 
 <tr><td>--merge</td>                      <td>Use all points from all routes in gpx
 	                                      file</td></tr>
+<tr><td>--height|--noheight</td>    <td>Enable (Default) or Disable height profile<td></tr>
 
 <tr><td>inputfile</td>                    <td>GPX file to read</td></tr>
 </table>
 
 
 <p>
-Output format is Google maps, unless <code>--yahoo</code> is given.<br>
+Output format is Google maps, unless <code>--osm</code> or <code>--yahoo</code> is given.<br>
 When neither <code>--route</code> nor <code>--merge</code> are specified,
 create individual web pages for each route.</p>
 
@@ -190,21 +201,24 @@ Just use the following command line:</p>
 <p>You can change certain settings of gpx2map operation in the header of
 the executable. Just search for "global settings".</p>
 
-<p><a name="apikeys">Most</a> certainly you want to change the Google and/or
-Yahoo Maps API keys. They're required when you want to upload the html pages to a
-server. Otherwise the API refuses to work.<br>
-In the example of Google the key is bound to site, directory and Google Account.</p>
+<p><a name="apikeys">In case you want to try out (or fix) the currently broken
+Yahoo interface you certainly want to change the Yahoo Maps API key.
+It's required when you want to upload the html pages to a
+server. Otherwise the API refuses to work.</a><br>
+Google recently (End of 2009) dropped the API key requirement in their Version 3
+API.</p>
 
+<p>Most common settings - the others are documented in the script itself:</p>
 
 <dl>
-<dt>map_key_google</dt><dd>Google API Map key - just apply at
-    <a href="http://code.google.com/apis/maps/signup.html">Google</a> for it</dd>
-<dt>map_key_yahoo</dt><dd>Same story as for Google Maps key; just apply at
+<dt>map_key_yahoo</dt><dd>Yahoo API Map key - just apply at
     <a href="http://maps.yahoo.com">Yahoo</a></dd>
-
 <dt>map_line_dist</dt><dd>Distance between Polyline points, in kilometer</dd>
 <dt>map_points_dist</dt><dd>Distance between mapping points in kilometer.
 	                  Must be a multiple of map_line_dist</dd>
+<dt>height_diff</dt><dd>Height difference between height diagram points in meter.
+	                 The more accurate your GPS records height information,
+                         the smaller value you can use here (and vice versa)</dd>
 <dt>gpsbabel_cmd</dt><dd>Call to gpsbabel, without output file name.
 	                 The shell tokens are split up into fields.<br>
                          You most certainly need to change here to use
@@ -220,18 +234,23 @@ In the example of Google the key is bound to site, directory and Google Account.
  <tr>
    <th>GPX File</th>
    <th>Google Output</th>
-   <th>Yahoo Output</th>
+   <th>OSM Output</th>
  </tr>
  </thead>
  <tr>
   <td><a href="examples/ischgl.xml">ischgl.xml</a></td>
   <td><a href="examples/ischgl-google.html">ischgl-google.html</a></td>
-  <td><a href="examples/ischgl-yahoo.html">ischgl-yahoo.html</a></td>
+  <td><a href="examples/ischgl-osm.html">ischgl-osm.html</a></td>
  </tr>
  <tr>
   <td><a href="examples/juh.xml">juh.xml</a></td>
   <td><a href="examples/juh-google.html">juh-google.html</a></td>
-  <td><a href="examples/juh-yahoo.html">juh-yahoo.html</a></td>
+  <td><a href="examples/juh-osm.html">juh-osm.html</a></td>
+ </tr>
+ <tr>
+  <td><a href="examples/monte_viso.xml">monte_viso.gpx</a></td>
+  <td><a href="examples/monte_viso-google.html">monte_viso-google.html</a></td>
+  <td><a href="examples/monte_viso-osm.html">monte_viso-osm.html</a></td>
  </tr>
  <tr>
   <td style="vertical-align: top;"><a href="/trips/hiking/2007-09-italy/gps/italy_hiking.xml">italy_hiking.xml</a></td>
@@ -245,29 +264,18 @@ In the example of Google the key is bound to site, directory and Google Account.
 
 			       <h2>Known Issues</h2>
 
-<p>The browser compatibility should be improved.<br>
-gpx2map generated pages are tested sucessfully with Firefox 2.0,
+<p>The browser compatibility could be improved.<br>
+gpx2map generated pages are tested sucessfully with Firefox 2 and 3,
 with most other (older) browsers you can expect drawbacks.
 </p>
 
-<p>Secondly the pages created for Yahoo Maps lack a correct document type declaration.
-It's not fixed yet because when I put a document type then the map element does
-not resizes anymore to browser window size. I did not found the reason for
-this behaviour yet.</p>
+<p>Secondly the Yahoo Maps mash-up is currently broken and most probably
+won't be fixed, because I myself don't use it at all. You're welcome to
+provide me an updated template file to use with gpx2map.</p>
 
-<p>When you can contribute to improve compatibility you're warmly 
-welcome to enhance the templates.
-Just contact <a href="mailto:robert.lange@s1999.tu-chemnitz.de">me</a>.</p>
+<p>When you want to contribute to gpx2map you're warmly 
+welcome. Just contact <a href="mailto:robert.lange@s1999.tu-chemnitz.de">me</a>.</p>
 
-
-<h2>TODO</h2>
-
-<ul>
-<li>To support multiple deployment directories add command line option for API key<br>
-     Until then you could only use an afterburner-scriptlet which exchanges the dummy API key
-     in the HTML documents with the real one.</li>
-<li>Distribution archive: Put all files below &quot;gpx2map_version/&quot;</li>
-</ul>
 
 
 			       <h2>Author and Credits</h2>
@@ -276,19 +284,9 @@ Just contact <a href="mailto:robert.lange@s1999.tu-chemnitz.de">me</a>.</p>
 <p>The author is Robert Lange &lt;<a href="mailto:robert.lange@s1999.tu-chemnitz.de">robert.lange@s1999.tu-chemnitz.de</a>&gt;<br>
 If you have any questions, just write me.</p>
 
-<p>The home page of gpx2map is <a href="http://sethdepot.org/gpx2map/">http://sethdepot.org/gpx2map</a>.<br>
+<p>The home page of gpx2map is <a href="http://sethdepot.org/gpx2map/">http://sethdepot.org/gpx2map</a><br>
 Please look there for new versions.</p>
 
-<p>I specially thank <a href="http://perlmeister.com/">Mike Schill</a>, who presented in
-the german <a href="http://www.linux-magazin.de/">linux magazine</a> how to use
-GPS data as <a href="http://www.linux-magazin.de/heft_abo/ausgaben/2006/07/hinterm_horizont">route overlay</a> in Yahoo.</p>
-
-<p>Kudos goes also to <a href="http://www.gpsbabel.org/">gpsbabel</a> for providing an simple
-interface to my <a href="http://garmin.de/outdoor/produktbeschreibung/etrex_h/">Garmin eTrex</a>.</p>
-
-
-<p>And of course my thanks are going to everybody behind <a href="http://en.wikipedia.org/wiki/Perl">Perl</a>,
-<a href="http://www.cpan.org">CPAN</a>, <a href="http://en.wikipedia.org/wiki/Linux">Linux</a> and free software in general.</p>
 
 
 
@@ -302,8 +300,8 @@ interface to my <a href="http://garmin.de/outdoor/produktbeschreibung/etrex_h/">
 	 <a href="http://validator.w3.org/check/referer">
 	 <img style="border-width:0px" src="http://www.w3.org/Icons/valid-html40" alt="Valid HTML 4.0!" height="31" width="88">
     </a></td>
-    <td style="text-align:right">last modification: <!--INCLUDEDATE-->2008-01-10<!--ENDINC--><br>
-         <div style="font-size:smaller">$LastChangedRevision: 327 $<br>$LastChangedDate: 2009-05-26 19:22:38 +0200 (Tue, 26 May 2009) $</div>
+    <td style="text-align:right">last modification: <!--INCLUDEDATE-->2009-10-20<!--ENDINC--><br>
+         <div style="font-size:smaller">$LastChangedRevision: 342 $<br>$LastChangedDate: 2009-10-24 00:36:20 +0200 (Sat, 24 Oct 2009) $</div>
 	    </td>
   </tr>
 </table></div>

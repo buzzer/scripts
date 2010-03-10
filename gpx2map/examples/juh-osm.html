@@ -1,0 +1,290 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+ <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <title>juh</title>
+    <style type="text/css">
+         html, body {height: 100%}   <!-- Required for strict Doctype, otherwise map is zero size -->
+    </style>
+    <!-- bring in the OpenLayers and OpenStreetMap javascript libraries -->
+    <script type="text/javascript" src="http://www.openlayers.org/api/OpenLayers.js"></script>
+    <script type="text/javascript" src="http://www.openstreetmap.org/openlayers/OpenStreetMap.js"></script>
+
+   <script type="text/javascript">
+   //<![CDATA[
+
+    function load() {
+      // *** Map Itself
+      var map = new OpenLayers.Map ("map", {
+       controls:[
+        new OpenLayers.Control.Navigation(),
+        new OpenLayers.Control.PanZoomBar(),
+        new OpenLayers.Control.Permalink(),
+        new OpenLayers.Control.OverviewMap() ],
+       numZoomLevels: 19,
+       units: 'm',
+       projection: new OpenLayers.Projection("EPSG:900913"),
+       displayProjection: new OpenLayers.Projection("EPSG:4326")
+      } );
+ 
+      // Define the map layer
+      layerTilesAtHome = new OpenLayers.Layer.OSM.Osmarender("Osmarender");
+      map.addLayer(layerTilesAtHome);
+ 
+      // Define the markers layer
+      layerMarkers = new OpenLayers.Layer.Markers("Markers");
+      map.addLayer(layerMarkers);
+      if( ! map.getCenter() ){
+          var lonLat = new OpenLayers.LonLat(13.410079479, 54.669985771).transform(new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
+          map.setCenter (lonLat, 12);   // 2. Parameter: Initial zoom
+      }
+
+     // *** Track points
+     var size = new OpenLayers.Size(20,34);
+     var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
+     var iconS = new OpenLayers.Icon('http://www.google.com/mapfiles/markerS.png',size,offset);
+     var iconE = new OpenLayers.Icon('http://www.google.com/mapfiles/markerE.png',size,offset);
+     var icon = new OpenLayers.Icon('http://www.google.com/mapfiles/marker.png',size,offset);
+
+     var point = new  OpenLayers.LonLat(13.410079479, 54.669985771).transform(
+                      new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
+     layerMarkers.addMarker(new OpenLayers.Marker(point,iconS));
+     // TODO: Add description:"0.00 km, Height: -22m, Start Point"
+     
+     var point = new  OpenLayers.LonLat(13.429713249, 54.667003155).transform(
+                      new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
+     layerMarkers.addMarker(new OpenLayers.Marker(point,icon.clone()));
+     // TODO: Add description:"2.02 km, Height: 18m"
+     
+     var point = new  OpenLayers.LonLat(13.435184956, 54.677689075).transform(
+                      new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
+     layerMarkers.addMarker(new OpenLayers.Marker(point,icon.clone()));
+     // TODO: Add description:"4.03 km, Height: 41m"
+     
+     var point = new  OpenLayers.LonLat(13.431129456, 54.663226604).transform(
+                      new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
+     layerMarkers.addMarker(new OpenLayers.Marker(point,icon.clone()));
+     // TODO: Add description:"6.14 km, Height: -3m"
+     
+     var point = new  OpenLayers.LonLat(13.403706551, 54.654729366).transform(
+                      new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
+     layerMarkers.addMarker(new OpenLayers.Marker(point,icon.clone()));
+     // TODO: Add description:"8.31 km, Height: -4m"
+     
+     var point = new  OpenLayers.LonLat(13.381390572, 54.642627239).transform(
+                      new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
+     layerMarkers.addMarker(new OpenLayers.Marker(point,icon.clone()));
+     // TODO: Add description:"10.42 km, Height: -4m"
+     
+     var point = new  OpenLayers.LonLat(13.377828598, 54.624388218).transform(
+                      new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
+     layerMarkers.addMarker(new OpenLayers.Marker(point,icon.clone()));
+     // TODO: Add description:"12.51 km, Height: -4m"
+     
+     var point = new  OpenLayers.LonLat(13.379673958, 54.615590572).transform(
+                      new OpenLayers.Projection("EPSG:4326"), map.getProjectionObject());
+     layerMarkers.addMarker(new OpenLayers.Marker(point,iconE));
+     // TODO: Add description:"13.61km, Height: 1m, End Point"
+     
+
+    // *** Map Line
+    var lineLayer = new OpenLayers.Layer.Vector('Line Layer');
+    var points = new Array(
+     new OpenLayers.Geometry.Point(13.410079479, 54.669985771),
+     new OpenLayers.Geometry.Point(13.410186768, 54.670221806),
+     new OpenLayers.Geometry.Point(13.410422802, 54.670135975),
+     new OpenLayers.Geometry.Point(13.412032127, 54.671144485),
+     new OpenLayers.Geometry.Point(13.412654400, 54.671895504),
+     new OpenLayers.Geometry.Point(13.413083553, 54.672174454),
+     new OpenLayers.Geometry.Point(13.415336609, 54.672710896),
+     new OpenLayers.Geometry.Point(13.415529728, 54.672646523),
+     new OpenLayers.Geometry.Point(13.415808678, 54.672303200),
+     new OpenLayers.Geometry.Point(13.416044712, 54.672238827),
+     new OpenLayers.Geometry.Point(13.416430950, 54.672346115),
+     new OpenLayers.Geometry.Point(13.416237831, 54.672625065),
+     new OpenLayers.Geometry.Point(13.416516781, 54.672646523),
+     new OpenLayers.Geometry.Point(13.416194916, 54.672667980),
+     new OpenLayers.Geometry.Point(13.416216373, 54.672753811),
+     new OpenLayers.Geometry.Point(13.417117596, 54.672882557),
+     new OpenLayers.Geometry.Point(13.417117596, 54.672989845),
+     new OpenLayers.Geometry.Point(13.419113159, 54.673526287),
+     new OpenLayers.Geometry.Point(13.421516418, 54.672389030),
+     new OpenLayers.Geometry.Point(13.423125744, 54.671444893),
+     new OpenLayers.Geometry.Point(13.424992561, 54.670650959),
+     new OpenLayers.Geometry.Point(13.425571918, 54.670221806),
+     new OpenLayers.Geometry.Point(13.425850868, 54.669449329),
+     new OpenLayers.Geometry.Point(13.427267075, 54.667904377),
+     new OpenLayers.Geometry.Point(13.428704739, 54.667174816),
+     new OpenLayers.Geometry.Point(13.429262638, 54.667024612),
+     new OpenLayers.Geometry.Point(13.429820538, 54.667088985),
+     new OpenLayers.Geometry.Point(13.429927826, 54.666638374),
+     new OpenLayers.Geometry.Point(13.429713249, 54.667003155),
+     new OpenLayers.Geometry.Point(13.430314064, 54.666767120),
+     new OpenLayers.Geometry.Point(13.430314064, 54.665951729),
+     new OpenLayers.Geometry.Point(13.430657387, 54.665522575),
+     new OpenLayers.Geometry.Point(13.430614471, 54.665951729),
+     new OpenLayers.Geometry.Point(13.431022167, 54.666059017),
+     new OpenLayers.Geometry.Point(13.431322575, 54.666037560),
+     new OpenLayers.Geometry.Point(13.431730270, 54.665780067),
+     new OpenLayers.Geometry.Point(13.432116508, 54.665865898),
+     new OpenLayers.Geometry.Point(13.432846069, 54.665694237),
+     new OpenLayers.Geometry.Point(13.432738781, 54.665672779),
+     new OpenLayers.Geometry.Point(13.432524204, 54.665951729),
+     new OpenLayers.Geometry.Point(13.432288170, 54.666037560),
+     new OpenLayers.Geometry.Point(13.432567120, 54.665973186),
+     new OpenLayers.Geometry.Point(13.432137966, 54.666209221),
+     new OpenLayers.Geometry.Point(13.432395458, 54.667088985),
+     new OpenLayers.Geometry.Point(13.431880474, 54.668505192),
+     new OpenLayers.Geometry.Point(13.432009220, 54.669642448),
+     new OpenLayers.Geometry.Point(13.431773186, 54.670329094),
+     new OpenLayers.Geometry.Point(13.432030678, 54.670479298),
+     new OpenLayers.Geometry.Point(13.432459831, 54.671745300),
+     new OpenLayers.Geometry.Point(13.433275223, 54.672775269),
+     new OpenLayers.Geometry.Point(13.433554173, 54.674363136),
+     new OpenLayers.Geometry.Point(13.434133530, 54.674255848),
+     new OpenLayers.Geometry.Point(13.434648514, 54.674620628),
+     new OpenLayers.Geometry.Point(13.434734344, 54.674491882),
+     new OpenLayers.Geometry.Point(13.434948921, 54.674663544),
+     new OpenLayers.Geometry.Point(13.434906006, 54.674856663),
+     new OpenLayers.Geometry.Point(13.434648514, 54.674792290),
+     new OpenLayers.Geometry.Point(13.434519768, 54.675221443),
+     new OpenLayers.Geometry.Point(13.434755802, 54.675221443),
+     new OpenLayers.Geometry.Point(13.435249329, 54.675500393),
+     new OpenLayers.Geometry.Point(13.435506821, 54.676959515),
+     new OpenLayers.Geometry.Point(13.435893059, 54.677560329),
+     new OpenLayers.Geometry.Point(13.435184956, 54.677689075),
+     new OpenLayers.Geometry.Point(13.434112072, 54.678375721),
+     new OpenLayers.Geometry.Point(13.435249329, 54.678268433),
+     new OpenLayers.Geometry.Point(13.435120583, 54.678504467),
+     new OpenLayers.Geometry.Point(13.436150551, 54.677796364),
+     new OpenLayers.Geometry.Point(13.435356617, 54.677174091),
+     new OpenLayers.Geometry.Point(13.435184956, 54.675650597),
+     new OpenLayers.Geometry.Point(13.434906006, 54.675393105),
+     new OpenLayers.Geometry.Point(13.434262276, 54.675157070),
+     new OpenLayers.Geometry.Point(13.433554173, 54.674427509),
+     new OpenLayers.Geometry.Point(13.432760239, 54.674170017),
+     new OpenLayers.Geometry.Point(13.432245255, 54.673676491),
+     new OpenLayers.Geometry.Point(13.430893421, 54.670414925),
+     new OpenLayers.Geometry.Point(13.431043625, 54.669964314),
+     new OpenLayers.Geometry.Point(13.431344032, 54.669814110),
+     new OpenLayers.Geometry.Point(13.431043625, 54.669449329),
+     new OpenLayers.Geometry.Point(13.431172371, 54.668290615),
+     new OpenLayers.Geometry.Point(13.431816101, 54.666895866),
+     new OpenLayers.Geometry.Point(13.431794643, 54.666252136),
+     new OpenLayers.Geometry.Point(13.431472778, 54.665930271),
+     new OpenLayers.Geometry.Point(13.432309628, 54.665758610),
+     new OpenLayers.Geometry.Point(13.432438374, 54.665350914),
+     new OpenLayers.Geometry.Point(13.431129456, 54.663226604),
+     new OpenLayers.Geometry.Point(13.430764675, 54.663054943),
+     new OpenLayers.Geometry.Point(13.429305553, 54.661531448),
+     new OpenLayers.Geometry.Point(13.428962231, 54.661552906),
+     new OpenLayers.Geometry.Point(13.428597450, 54.660909176),
+     new OpenLayers.Geometry.Point(13.427803516, 54.660394192),
+     new OpenLayers.Geometry.Point(13.427309990, 54.659857750),
+     new OpenLayers.Geometry.Point(13.424756527, 54.659020901),
+     new OpenLayers.Geometry.Point(13.424220085, 54.658613205),
+     new OpenLayers.Geometry.Point(13.421452045, 54.657132626),
+     new OpenLayers.Geometry.Point(13.421022892, 54.656767845),
+     new OpenLayers.Geometry.Point(13.417375088, 54.656381607),
+     new OpenLayers.Geometry.Point(13.416881561, 54.656209946),
+     new OpenLayers.Geometry.Point(13.415787220, 54.655501842),
+     new OpenLayers.Geometry.Point(13.409585953, 54.655351639),
+     new OpenLayers.Geometry.Point(13.406753540, 54.654922485),
+     new OpenLayers.Geometry.Point(13.403706551, 54.654729366),
+     new OpenLayers.Geometry.Point(13.401474953, 54.654321671),
+     new OpenLayers.Geometry.Point(13.397505283, 54.652841091),
+     new OpenLayers.Geometry.Point(13.394265175, 54.652540684),
+     new OpenLayers.Geometry.Point(13.392462730, 54.652090073),
+     new OpenLayers.Geometry.Point(13.389673233, 54.651124477),
+     new OpenLayers.Geometry.Point(13.389050961, 54.650695324),
+     new OpenLayers.Geometry.Point(13.387870789, 54.650180340),
+     new OpenLayers.Geometry.Point(13.386433125, 54.649193287),
+     new OpenLayers.Geometry.Point(13.384587765, 54.647519588),
+     new OpenLayers.Geometry.Point(13.382849693, 54.645266533),
+     new OpenLayers.Geometry.Point(13.381390572, 54.642627239),
+     new OpenLayers.Geometry.Point(13.379909992, 54.641017914),
+     new OpenLayers.Geometry.Point(13.379094601, 54.639151096),
+     new OpenLayers.Geometry.Point(13.378043175, 54.637477398),
+     new OpenLayers.Geometry.Point(13.377463818, 54.637048244),
+     new OpenLayers.Geometry.Point(13.376991749, 54.636447430),
+     new OpenLayers.Geometry.Point(13.376648426, 54.635610580),
+     new OpenLayers.Geometry.Point(13.376584053, 54.632306099),
+     new OpenLayers.Geometry.Point(13.377828598, 54.624388218),
+     new OpenLayers.Geometry.Point(13.381261826, 54.615762234),
+     new OpenLayers.Geometry.Point(13.381047249, 54.615612030),
+     new OpenLayers.Geometry.Point(13.380274773, 54.615526199),
+     new OpenLayers.Geometry.Point(13.379673958, 54.615590572)
+    );
+
+    var line = new OpenLayers.Geometry.LineString(points); 
+    var defaultProj = new OpenLayers.Projection('EPSG:4326');
+    line = line.transform(defaultProj, map.getProjectionObject());
+
+    lineFeature = new OpenLayers.Feature.Vector(line, null, {
+     strokeColor: '#F02000', 
+     strokeOpacity: 0.7,
+     strokeWidth: 3
+    });
+    lineLayer.addFeatures([lineFeature]);
+    map.addLayer(lineLayer);  // Add to map
+  }
+
+  function set_size() {
+       // Update size of map element to fill browser window
+    if (document.getElementById) {   // When element is available then reposition
+       // Update width to window height
+       document.getElementById("map").style.width = (window.innerWidth - 30) + "px";
+       // Update height to window height
+       var height = window.innerHeight;   // Start with window height
+       height = height - document.getElementById("map").offsetTop;  // substract start of window element
+       document.getElementById("map").style.height = (height - 10) + "px";   // Update element
+    }
+    // else: Use MS-Only method for older IE versions (not implemented)
+  }
+
+  // Register set_size to be executed every time the browser window size is changed
+  if ( window.addEventListener ) {   // when modern listener method is supported
+     window.addEventListener ("resize", set_size, false);
+  } else if (window.captureEvents ) {  // otherwise try older version
+     window.captureEvents(Event.RESIZE);
+     window.onresize = set_size;
+  } else if (window.attachEvent) {      // at last try MSIE special version
+     object.attachEvent("onresize", set_size);
+  }
+  //]]>
+  </script>
+</head>
+
+<body onload="load(); set_size();">
+
+  <h1><a name="toplocation">juh</a></h1>
+
+  <table style="width:100%;border-width:0px;">
+  <tr>
+  <td style="text-align:left;">Distance is 13.61km</td>
+  <td style="text-align:left;"><a href="#addinfos">Additional Information</a></td>
+  <td style="text-align:right;">created with <a href="http://sethdepot.org/gpx2map/">gpx2map</a></td>
+  </tr>
+  </table>
+
+  <div id="map" style="width:100%; height:80%"></div>
+
+    <h2><a name="addinfos">Additional Information</a></h2>
+
+    <div><a href="#toplocation">Back to top</a></div>
+
+
+    <ul>
+      <li>Hover over markers for distance from start and height</li>
+      <li>Accumulated Ascend: 60 m</li>
+      <li>Accumulated Descend: 28 m</li>
+    </ul>
+
+  <!-- Height Display -->
+  <div  style="text-align:center">
+     <img alt="Height Profile" src="juh-juh.png" />
+  </div>
+
+</body>
+</html>
