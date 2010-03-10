@@ -407,8 +407,11 @@ sub read_trkpt_xml_handler($$) {
     my $ele;
 
     if ( $trkpt->children_count() ) {  # We have children
-      $ele = $trkpt->first_child(
-				 'ele')->text();
+      if ( $trkpt->first_child('ele') ) { #SRO: 'ele' children
+        $ele = $trkpt->first_child('ele')->text();
+      } else {
+        $ele = 0; #SRO: No 'ele' children available
+      }
     } else {
       $ele = 0;      # No children, thus no elevation available
     }
