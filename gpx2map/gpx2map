@@ -244,6 +244,8 @@ sub main() {
   # *** Variables
   my $twig;              # XML Twig module
   my $title;             # Generated web page title
+  use vars qw($g_lastEle); #SRO: Store last elevation globally
+  $g_lastEle = 0;          #Start with 0 meters (when not in gpx file)
 
   # *** read the command line
   read_commandline();
@@ -404,17 +406,14 @@ sub read_trkpt_xml_handler($$) {
 
     my $lat     = $trkpt->att('lat');
     my $lon     = $trkpt->att('lon');
-    my $ele;
+    my $ele     = $g_lastEle; #SRO: Set ele to last known trkpt value
 
     if ( $trkpt->children_count() ) {  # We have children
-      if ( $trkpt->first_child('ele') ) { #SRO: 'ele' children
+      if ( $trkpt->first_child('ele') ) { #SRO: Found 'ele' children
         $ele = $trkpt->first_child('ele')->text();
-      } else {
-        $ele = 0; #SRO: No 'ele' children available
       }
-    } else {
-      $ele = 0;      # No children, thus no elevation available
     }
+    $g_lastEle = $ele; #SRO: Store current ele globally
 
     push @points, {
         lat => $lat, lon => $lon, ele => $ele
