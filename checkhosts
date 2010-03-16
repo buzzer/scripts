@@ -4,7 +4,7 @@
 # Check shall be as light as possible
 
 ptimeout=1 # ping timeout in seconds
-plogfile="`basename $0`_log.txt"
+plogfile="$HOME/`basename $0`_log.txt"
 E_OK=0
 E_NOK=1
 E_NORESP=2 # ping exit for no response
