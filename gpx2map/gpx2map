@@ -73,7 +73,8 @@ my %opts = (        # Processed options for use in the program
     map_line_dist => '0.005',          #   5 meter
     # Distance between mapping points in kilometer (multiple of map_line_dist)
     #map_points_dist => '2.0',        # 2000 meter
-    map_points_dist => '500.0',        # 500 kilometer
+    map_points_dist => '10.0',        # 10 kilometer
+    #map_points_dist => '500.0',        # 500 kilometer
     # Height Difference between height diagram points in meters
     height_diff => '25',        #   25 meter
 
