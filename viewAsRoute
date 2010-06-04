@@ -1,0 +1,24 @@
+#!/bin/bash
+# 2010-06-04 Sebastian Rockel
+# Create a gpx copy of given file and reduce the # of route points to < 25.
+# This is due to google maps limit of route points to alphabet letters
+# Finally display the route via google maps.
+
+EXITKO=-1
+EXITOK=0
+
+[ $1 ] || exit $EXITKO
+
+# Script paths
+BABELPATH='/opt/local/bin'
+redFile=`basename -s .gpx $1`_asRoute.gpx
+
+# Call gpsbabel
+# TODO Why is count=8 equal to 3*8=24 route points?
+$BABELPATH/gpsbabel -r -i gpx,gpxver=1.1 -f $1 -x nuketypes,waypoints \
+  -x simplify,count=8 -o gpx,gpxver=1.1 -F $redFile || exit $EXITKO
+
+# Call gpx (route) to google maps translator
+gpx2gmap $redFile || exit $EXITKO
+
+exit $EXITOK

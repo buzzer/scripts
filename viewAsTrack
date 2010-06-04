@@ -1,0 +1,26 @@
+#!/bin/bash
+# 2010-06-04 Sebastian Rockel
+# Create a gpx copy of given file and converts any route(s) to track(s).
+# Finally display the track via google maps.
+
+EXITKO=-1
+EXITOK=0
+
+[ $1 ] || exit $EXITKO
+
+# Script paths
+BABELPATH='/opt/local/bin'
+outFile=`basename -s .gpx $1`_asTrack.gpx
+htmlFile=`basename -s .gpx $outFile`*.html
+
+# Call gpsbabel
+$BABELPATH/gpsbabel -r -i gpx,gpxver=1.1 -f $1 -x nuketypes,waypoints \
+  -x transform,trk=rte,del -o gpx,gpxver=1.1 -F $outFile || exit $EXITKO
+
+# Call gpx (track) to google maps translator
+gpx2map --merge $outFile || exit $EXITKO
+
+# Open browser and load map
+open $htmlFile || exit $EXITKO
+
+exit $EXITOK
