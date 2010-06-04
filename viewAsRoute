@@ -11,7 +11,8 @@ EXITOK=0
 
 # Script paths
 BABELPATH='/opt/local/bin'
-redFile=`basename -s .gpx $1`_asRoute.gpx
+GPX2GMAP='/Users/sebastian/bin'
+redFile=/Users/sebastian/tmp/`basename -s .gpx $1`_asRoute.gpx
 
 # Call gpsbabel
 # TODO Why is count=8 equal to 3*8=24 route points?
@@ -19,6 +20,6 @@ $BABELPATH/gpsbabel -r -i gpx,gpxver=1.1 -f $1 -x nuketypes,waypoints \
   -x simplify,count=8 -o gpx,gpxver=1.1 -F $redFile || exit $EXITKO
 
 # Call gpx (route) to google maps translator
-gpx2gmap $redFile || exit $EXITKO
+$GPX2GMAP/gpx2gmap $redFile || exit $EXITKO
 
 exit $EXITOK

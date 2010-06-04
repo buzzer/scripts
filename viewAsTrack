@@ -10,15 +10,16 @@ EXITOK=0
 
 # Script paths
 BABELPATH='/opt/local/bin'
-outFile=`basename -s .gpx $1`_asTrack.gpx
-htmlFile=`basename -s .gpx $outFile`*.html
+GPX2MAP='/Users/sebastian/bin/gpx2map'
+outFile=/Users/sebastian/tmp/`basename -s .gpx $1`_asTrack.gpx
+htmlFile=/Users/sebastian/tmp/`basename -s .gpx $outFile`*.html
 
 # Call gpsbabel
 $BABELPATH/gpsbabel -r -i gpx,gpxver=1.1 -f $1 -x nuketypes,waypoints \
   -x transform,trk=rte,del -o gpx,gpxver=1.1 -F $outFile || exit $EXITKO
 
 # Call gpx (track) to google maps translator
-gpx2map --merge $outFile || exit $EXITKO
+$GPX2MAP/gpx2map --merge $outFile || exit $EXITKO
 
 # Open browser and load map
 open $htmlFile || exit $EXITKO
