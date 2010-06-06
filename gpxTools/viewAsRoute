@@ -13,6 +13,7 @@ EXITOK=0
 BABELPATH='/opt/local/bin'
 GPX2GMAP='/Users/sebastian/bin/gpxTools'
 OUTDIR='/Users/sebastian/tmp'
+MAXPOINTS=24 # Google Maps has max. 24
 
 # TODO Wordaround for Automator giving args twice in $@
 #for f in "$@"
@@ -25,9 +26,9 @@ OUTDIR='/Users/sebastian/tmp'
   $BABELPATH/gpsbabel -r -t -i gpx,gpxver=1.1 -f $1 \
     -x nuketypes,waypoints \
     -x transform,trk=rte,del \
-    -x track,merge,title="COMBINED LOG" \
+    -x track,merge,title="COMBINED_LOG" \
     -x transform,rte=trk,del \
-    -x simplify,count=24 \
+    -x simplify,count=$MAXPOINTS \
     -o gpx,gpxver=1.1 \
     -F $outFile || exit $EXITKO
 

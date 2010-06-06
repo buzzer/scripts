@@ -1,21 +1,24 @@
-#!/usr/bin/perl
+#!/bin/bash
 # 2010-06-06 Sebastian Rockel
 # Takes gpx files as argument and merge them to one output file.
 
-use warnings;
-use strict;
-use File::Basename;
+EXITKO=-1
+EXITOK=0
 
-my $filesArg = join(' -f ', @ARGV);
-my ($name,$path,$suffix) = fileparse($ARGV[0]);
-my $curFolder = $path;
-my $outFile  = "$curFolder"."combinedLog.gpx";
+[ $# -gt 0 ] || exit $EXITKO
 
-#print "@ARGV\n";
-print "$filesArg\n";
-print "$outFile\n";
-#print "$curFolder\n";
+# Script paths
+GPSBABEL='/opt/local/bin/gpsbabel'
+filesArg=`echo $@ | sed -e 's/ / -f /g'`
+outFile=$1".merge.gpx"
 
-system("gpsbabel -r -t -i gpx,gpxver=1.1 -f $filesArg -x nuketypes,waypoints -x transform,trk=rte,del -x track,pack,title='COMBINED LOG' -o gpx,gpxver=1.1 -o gpx -F '$outFile'");
+#echo "IN: $filesArg"
+#echo "OUT: $outFile"
 
-exit 0;
+$GPSBABEL -r -t -i gpx,gpxver=1.1 -f $filesArg \
+  -x nuketypes,waypoints \
+  -x transform,trk=rte,del \
+  -x track,merge,title='COMBINED_LOG' \
+  -o gpx,gpxver=1.1 -o gpx -F $outFile || exit $EXITKO
+
+exit $EXITOK
