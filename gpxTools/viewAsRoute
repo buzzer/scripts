@@ -11,7 +11,7 @@ EXITOK=0
 
 # Script paths
 BABELPATH='/opt/local/bin'
-GPX2GMAP='/Users/sebastian/bin'
+GPX2GMAP='/Users/sebastian/bin/gpxTools'
 OUTDIR='/Users/sebastian/tmp'
 
 # TODO Wordaround for Automator giving args twice in $@
@@ -22,8 +22,13 @@ OUTDIR='/Users/sebastian/tmp'
 
   # Call gpsbabel
   # TODO Why is count=8 equal to 3*8=24 route points?
-  $BABELPATH/gpsbabel -r -t -i gpx,gpxver=1.1 -f $1 -x nuketypes,waypoints \
-    -x transform,rte=trk,del -x simplify,count=8 -o gpx,gpxver=1.1 \
+  $BABELPATH/gpsbabel -r -t -i gpx,gpxver=1.1 -f $1 \
+    -x nuketypes,waypoints \
+    -x transform,trk=rte,del \
+    -x track,merge,title="COMBINED LOG" \
+    -x transform,rte=trk,del \
+    -x simplify,count=24 \
+    -o gpx,gpxver=1.1 \
     -F $outFile || exit $EXITKO
 
   # Call gpx (route) to google maps translator

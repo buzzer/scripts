@@ -1,35 +1,53 @@
-#!/usr/bin/perl -w
-#/opt/local/bin/perl -w
+#!/usr/bin/perl
+# Original from
 # http://blog.dinotools.de/2008/11/24/einzelne-tracks-aus-gpx-dateien-extrahieren
+# modified by 2010-06-06 Sebastian Rockel
 
-$file = $ARGV[0];
-$tmp_file = "$file.tmp";
+#use warnings;
+use strict;
+
+# Geo::Gpx is a Perl module to create and parse GPX files.
+# For more information for use see 'perldoc Geo::Gpx'
+use Geo::Gpx;
+
+my $file = $ARGV[0];
+print "$file\n";
+my @segments=0;
+my @segNames=();
+my $tmp_file = "$file.tmp";
+print "$tmp_file\n";
 
 print "Setting track names ... ";
-system("gpsbabel -t -r -i gpx -f $file -x nuketypes,waypoints \
-  -x transform,trk=rte,del -x track,title='track-%Y%m%d-%H%M%S' \
-  -o gpx -F $tmp_file");
+system("gpsbabel -t -r -w -i gpx -f $file -x nuketypes,waypoints -x transform,trk=rte,del -o gpx -F $tmp_file");
 print "done\n";
 
 print "Getting track names ... ";
+
 open(INFILE, $tmp_file);
-@tracks = ();
-#while($line = &lt;INFILE&gt;) {
-while(INFILE) {
-  if($line =~ m/ *&lt;name&gt;(track-[0-9-]*)&lt;\/name&gt;/i) {
-    push(@tracks, $1);
+
+my $gpxin = Geo::Gpx->new( input => $tmp_file );
+
+if ( $gpxin->tracks() ) {
+  @segments=@{$gpxin->tracks()};
+  # Get segments' name
+  for (my $count=0; $count < @segments; $count++) {
+    push(@segNames, @segments->[$count]->{'name'});
   }
 }
-close(INFILE);
-print "done\n";
-$count = 1;
-$num = @tracks;
 
-print "Tracks found: $num\n";
-print "Extracting tracks ... \n";
-foreach(@tracks) {
+close(INFILE);
+
+print "done\n";
+
+my $count = 1;
+my $num = @segments;
+
+print "Segments found: $num\n";
+print "Extracting segments ... \n";
+foreach(@segNames) {
   system("gpsbabel -t -r -w -i gpx -f $tmp_file -x track,name='$_' -o gpx -F $_.gpx");
-  print "Track $count from $num\n";
+  print "Segment $count from $num: $_\n";
   $count++;
 }
+system("rm -f $tmp_file");
 print "done\n";

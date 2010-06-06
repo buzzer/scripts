@@ -25,8 +25,10 @@ OUTDIR='/Users/sebastian/tmp'
   htmlFile=$OUTDIR/`basename -s .gpx $outFile`*.html
 
   # Call gpsbabel
-  $BABELPATH/gpsbabel -r -i gpx,gpxver=1.1 -f $1 -x nuketypes,waypoints \
-    -x transform,trk=rte,del -o gpx,gpxver=1.1 -F $outFile || exit $EXITKO
+  $BABELPATH/gpsbabel -r -i gpx,gpxver=1.1 -f $1\
+    -x nuketypes,waypoints \
+    -x transform,trk=rte,del \
+    -o gpx,gpxver=1.1 -F $outFile || exit $EXITKO
 
   # Call gpx (track) to google maps translator
   $GPX2MAP/gpx2map --merge $outFile || exit $EXITKO

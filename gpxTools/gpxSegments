@@ -1,0 +1,36 @@
+#!/usr/bin/perl
+# Looks for more than one route/track in .gpx file and output the names
+#
+# 2010-06-06 Sebastian Rockel
+# Several Routes in 1 file are recognized.
+#
+use warnings;
+use strict;
+
+# Geo::Gpx is a Perl module to create and parse GPX files.
+# For more information for use see 'perldoc Geo::Gpx'
+use Geo::Gpx;
+
+# Open GPX file
+my $fpath = shift ||  die "You have to specify a '.gpx' file as argument!";
+open (my $fh, '<', $fpath) || die "Cannot open file $fpath: $!";
+
+# Parse GPX from file
+my $gpxin = Geo::Gpx->new( input => $fh );
+
+if ( $gpxin->routes() ) {
+  my @routeArray=@{$gpxin->routes()};
+  for (my $route=0; $route < @routeArray; $route++) {
+    print $gpxin->routes()->[$route]->{'name'}."\n";
+  }
+}
+if ( $gpxin->tracks() ) {
+  my @trackArray=@{$gpxin->tracks()};
+  for (my $track=0; $track < @trackArray; $track++) {
+    print $gpxin->tracks()->[$track]->{'name'}."\n";
+  }
+}
+
+close ($fh);
+
+exit 0;

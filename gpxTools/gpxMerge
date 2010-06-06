@@ -1,0 +1,21 @@
+#!/usr/bin/perl
+# 2010-06-06 Sebastian Rockel
+# Takes gpx files as argument and merge them to one output file.
+
+use warnings;
+use strict;
+use File::Basename;
+
+my $filesArg = join(' -f ', @ARGV);
+my ($name,$path,$suffix) = fileparse($ARGV[0]);
+my $curFolder = $path;
+my $outFile  = "$curFolder"."combinedLog.gpx";
+
+#print "@ARGV\n";
+print "$filesArg\n";
+print "$outFile\n";
+#print "$curFolder\n";
+
+system("gpsbabel -r -t -i gpx,gpxver=1.1 -f $filesArg -x nuketypes,waypoints -x transform,trk=rte,del -x track,pack,title='COMBINED LOG' -o gpx,gpxver=1.1 -o gpx -F '$outFile'");
+
+exit 0;
