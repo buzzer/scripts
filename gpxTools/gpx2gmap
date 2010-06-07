@@ -21,6 +21,9 @@ my $maxPt = 24;
 # Google Url start
 my $gmapUrl="http://maps.google.de/maps?f=d&saddr=";
 
+# Put your browser command here
+my $BROWSER='open /Applications/Firefox.app';
+
 # Open GPX file
 my $fpath = shift ||  die "You have to specify a '.gpx' file as argument!";
 
@@ -48,6 +51,6 @@ while ( (my $pt = $iter->()) && ($maxPt > $count) ){
 #print $gmapUrl, "\n";
 
 # Open Browser
-system ("open /Applications/Firefox.app \"$gmapUrl\"");
+system ("$BROWSER \"$gmapUrl\"");
 
 exit 0;

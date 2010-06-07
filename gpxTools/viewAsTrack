@@ -9,39 +9,30 @@ EXITOK=0
 [ $# -gt 0 ] || exit $EXITKO
 
 # Script paths
-BABELPATH='/opt/local/bin'
-GPX2MAP='/Users/sebastian/bin/gpx2map'
-OUTDIR='/Users/sebastian/tmp'
+GPSBABEL='/opt/local/bin/gpsbabel'
+GPX2MAP=$HOME'/bin/gpx2map/gpx2map'
+BROWSER='open' # Put your browser command here
+OUTDIR='/tmp'
 
-# TODO Wordaround for Automator giving args twice in $@
-#touch $OUTDIR/viewAsTrack.log
-#echo "$@" >> $OUTDIR/viewAsTrack.log
+outFile=$OUTDIR/`basename -s .gpx $1`_asTrack.gpx
+htmlFile=$OUTDIR/`basename -s .gpx $outFile`*.html
 
-#for f in "$@"
-#while [ $# -gt 0 ]
-#do
+# Call gpsbabel
+$GPSBABEL -r -i gpx,gpxver=1.1 -f $1\
+  -x nuketypes,waypoints \
+  -x transform,trk=rte,del \
+  -x track,merge,title="COMBINED_LOG" \
+  -o gpx,gpxver=1.1 -F $outFile || exit $EXITKO
 
-  outFile=$OUTDIR/`basename -s .gpx $1`_asTrack.gpx
-  htmlFile=$OUTDIR/`basename -s .gpx $outFile`*.html
+# Call gpx (track) to google maps translator
+$GPX2MAP $outFile || exit $EXITKO
 
-  # Call gpsbabel
-  $BABELPATH/gpsbabel -r -i gpx,gpxver=1.1 -f $1\
-    -x nuketypes,waypoints \
-    -x transform,trk=rte,del \
-    -o gpx,gpxver=1.1 -F $outFile || exit $EXITKO
+# Open browser and load map
+$BROWSER $htmlFile || exit $EXITKO
 
-  # Call gpx (track) to google maps translator
-  $GPX2MAP/gpx2map --merge $outFile || exit $EXITKO
-
-  # Open browser and load map
-  open $htmlFile || exit $EXITKO
-
-  # Wait for the browser to be started
-  sleep 5
-  # Clean temporary files
-  rm -f $OUTDIR/`basename -s .gpx $outFile`*
-
-  #shift 2
-#done
+# Wait for the browser to be started
+sleep 2
+# Clean temporary files
+rm -f $OUTDIR/`basename -s .gpx $outFile`*
 
 exit $EXITOK

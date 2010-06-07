@@ -10,36 +10,29 @@ EXITOK=0
 [ $# -gt 0 ] || exit $EXITKO
 
 # Script paths
-BABELPATH='/opt/local/bin'
-GPX2GMAP='/Users/sebastian/bin/gpxTools'
-OUTDIR='/Users/sebastian/tmp'
+GPSBABEL='/opt/local/bin/gpsbabel'
+GPX2GMAP=$HOME'/bin/gpxTools/gpx2gmap'
+OUTDIR='/tmp'
 MAXPOINTS=24 # Google Maps has max. 24
 
-# TODO Wordaround for Automator giving args twice in $@
-#for f in "$@"
-#do
+outFile=$OUTDIR/`basename -s .gpx $1`_asRoute.gpx
 
-  outFile=$OUTDIR/`basename -s .gpx $1`_asRoute.gpx
+# Call gpsbabel
+$GPSBABEL -r -t -i gpx,gpxver=1.1 -f $1 \
+  -x nuketypes,waypoints \
+  -x transform,trk=rte,del \
+  -x track,merge,title="COMBINED_LOG" \
+  -x transform,rte=trk,del \
+  -x simplify,count=$MAXPOINTS \
+  -o gpx,gpxver=1.1 \
+  -F $outFile || exit $EXITKO
 
-  # Call gpsbabel
-  # TODO Why is count=8 equal to 3*8=24 route points?
-  $BABELPATH/gpsbabel -r -t -i gpx,gpxver=1.1 -f $1 \
-    -x nuketypes,waypoints \
-    -x transform,trk=rte,del \
-    -x track,merge,title="COMBINED_LOG" \
-    -x transform,rte=trk,del \
-    -x simplify,count=$MAXPOINTS \
-    -o gpx,gpxver=1.1 \
-    -F $outFile || exit $EXITKO
+# Call gpx (route) to google maps translator
+$GPX2GMAP $outFile || exit $EXITKO
 
-  # Call gpx (route) to google maps translator
-  $GPX2GMAP/gpx2gmap $outFile || exit $EXITKO
-
-  # Wait for the browser to be started
-  sleep 5
-  # Clean temporary files
-  rm -f $OUTDIR/`basename -s .gpx $outFile`*
-
-#done
+# Wait for the browser to be started
+sleep 5
+# Clean temporary files
+rm -f $OUTDIR/`basename -s .gpx $outFile`*
 
 exit $EXITOK
