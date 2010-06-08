@@ -1,4 +1,8 @@
 #!/bin/bash
+#This work by Sebastian Rockel (sebastianrockel@gmail.com) is licensed under a 
+#Creative Commons Attribution-Noncommercial-Share Alike 3.0 Germany License.
+#"http://creativecommons.org/licenses/by-nc-sa/3.0/de/"
+#
 # 2010-06-04 Sebastian Rockel
 # Create a gpx copy of given file and reduce the # of route points to < 25.
 # This is due to google maps limit of route points to alphabet letters

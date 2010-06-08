@@ -1,0 +1,32 @@
+Added gpxTools scripts.
+
+All scripts can be called via command line interface.
+Tested with the Bash on Mac OSX 'Snow Leopard' but should be
+working also with any Linux/Unix machine.
+Feedback is welcome (GitHub-Wiki, Email)
+
+Prerequisites (at least tested with):
+==============
+gpsbabel >= 1.3.6
+Perl >= 5.10.0
+gpx2map >= rev. 340 (from http://sethdepot.org/gpx2map/)
+Geo::Gpx >= 0.26 (-> 'cpan Geo::Gpx')
+gnuplot >= 4.2
+
+
+Scripts:
+========
+viewAsRoute - Displays gpx route or track via Google Maps (as route).
+viewAsTrack - Displays gpx route or track via Google Maps API (as track).
+gpxSplit  - Splits one gpx file containing multiple tracks or routes in one file per segment.
+gpxMerge  - Merges multiple gpx files (route or track) to one file and track.
+gpx2itn   - Creates a TomTom itn file with less than 48 points (from route or track gpx file).
+itn2gpx   - Creates a gpx file from TomTom itn file.
+gpx2gmap  - Google Maps Route Interface for viewAsRoute
+gpxSegments - Lists all tracks or routes in a gpx file.
+
+===========
+This work by Sebastian Rockel (sebastianrockel@gmail.com) is licensed under a 
+Creative Commons Attribution-Noncommercial-Share Alike 3.0 Germany License.
+"http://creativecommons.org/licenses/by-nc-sa/3.0/de/"
+

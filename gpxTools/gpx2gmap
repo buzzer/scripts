@@ -1,4 +1,8 @@
 #!/usr/bin/perl
+#This work by Sebastian Rockel (sebastianrockel@gmail.com) is licensed under a 
+#Creative Commons Attribution-Noncommercial-Share Alike 3.0 Germany License.
+#"http://creativecommons.org/licenses/by-nc-sa/3.0/de/"
+#
 # Convert a GPX formated file to a Google Map html link
 # Sebastian Rockel
 #

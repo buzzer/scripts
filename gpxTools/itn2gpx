@@ -1,4 +1,8 @@
 #!/bin/bash
+#This work by Sebastian Rockel (sebastianrockel@gmail.com) is licensed under a 
+#Creative Commons Attribution-Noncommercial-Share Alike 3.0 Germany License.
+#"http://creativecommons.org/licenses/by-nc-sa/3.0/de/"
+#
 # 2010-06-06 Sebastian Rockel
 # Convert a itn (TomTom) to gpx file
 
