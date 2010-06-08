@@ -1,5 +1,0 @@
-ssh -X -F .ssh/config_noproxy -l <username> <sps24-27>
-rlogin <sps30-31>
-setenv DISPLAY <ipaddresse>:0.0
-
-//Firewall muss offen sein!

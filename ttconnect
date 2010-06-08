@@ -1,3 +1,0 @@
-#!/bin/sh
-# HowTo: http://www.opentom.org/BTconsole
-kermit -l /dev/tty.TomTom-SerialPort-1 -b  9600 -c
