@@ -21,11 +21,14 @@ htmlFile=$OUTDIR/`basename -s .gpx $outFile`*.html
 $GPSBABEL -r -i gpx,gpxver=1.1 -f $1\
   -x nuketypes,waypoints \
   -x transform,trk=rte,del \
-  -x track,merge,title="COMBINED_LOG" \
   -o gpx,gpxver=1.1 -F $outFile || exit $EXITKO
 
+  #-x track,merge,title="COMBINED_LOG" \
+
 # Call gpx (track) to google maps translator
-$GPX2MAP $outFile || exit $EXITKO
+#Looks like gpx2map seg faults on large merged tracks from gpsbabel
+#but not if it merges them self!?
+$GPX2MAP --merge $outFile || exit $EXITKO
 
 # Open browser and load map
 $BROWSER $htmlFile || exit $EXITKO
