@@ -16,10 +16,12 @@ EXITOK=0
 GPSBABEL='/opt/local/bin/gpsbabel'
 GPX2MAP=$HOME'/bin/gpx2map/gpx2map'
 BROWSER='open' # Put your browser command here
+GPXSEGMENTS=$HOME'/bin/gpxTools/gpxSegments'
 OUTDIR='/tmp'
 
 outFile=$OUTDIR/`basename -s .gpx $1`_asTrack.gpx
 htmlFile=$OUTDIR/`basename -s .gpx $outFile`*.html
+maxChar=125 # More lead to error in gpx file
 
 # Call gpsbabel
 $GPSBABEL -r -i gpx,gpxver=1.1 -f $1\
@@ -29,10 +31,13 @@ $GPSBABEL -r -i gpx,gpxver=1.1 -f $1\
 
   #-x track,merge,title="COMBINED_LOG" \
 
+title=`$GPXSEGMENTS $outFile`
+[ `echo "$title" | wc -c` -lt $maxChar ] || title="Merged log"
+
 # Call gpx (track) to google maps translator
 #Looks like gpx2map seg faults on large merged tracks from gpsbabel
 #but not if it merges them self!?
-$GPX2MAP --merge $outFile || exit $EXITKO
+$GPX2MAP --title "$title" --merge $outFile #|| exit $EXITKO
 
 # Open browser and load map
 $BROWSER $htmlFile || exit $EXITKO

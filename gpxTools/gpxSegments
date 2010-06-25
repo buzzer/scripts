@@ -16,25 +16,27 @@ use strict;
 use Geo::Gpx;
 
 # Open GPX file
-my $fpath = shift ||  die "You have to specify a '.gpx' file as argument!";
-open (my $fh, '<', $fpath) || die "Cannot open file $fpath: $!";
+(@ARGV>0) || die "You have to specify a '.gpx' file as argument!";
+while (my $fpath = shift ) {
+  open (my $fh, '<', $fpath) || die "Cannot open file $fpath: $!";
 
 # Parse GPX from file
-my $gpxin = Geo::Gpx->new( input => $fh );
+  my $gpxin = Geo::Gpx->new( input => $fh );
 
-if ( $gpxin->routes() ) {
-  my @routeArray=@{$gpxin->routes()};
-  for (my $route=0; $route < @routeArray; $route++) {
-    print $gpxin->routes()->[$route]->{'name'}."\n";
+  if ( $gpxin->routes() ) {
+    my @routeArray=@{$gpxin->routes()};
+    for (my $route=0; $route < @routeArray; $route++) {
+      print $gpxin->routes()->[$route]->{'name'}." ";
+    }
   }
-}
-if ( $gpxin->tracks() ) {
-  my @trackArray=@{$gpxin->tracks()};
-  for (my $track=0; $track < @trackArray; $track++) {
-    print $gpxin->tracks()->[$track]->{'name'}."\n";
+  if ( $gpxin->tracks() ) {
+    my @trackArray=@{$gpxin->tracks()};
+    for (my $track=0; $track < @trackArray; $track++) {
+      print $gpxin->tracks()->[$track]->{'name'}." ";
+    }
   }
+  close ($fh);
 }
-
-close ($fh);
+print "\n";
 
 exit 0;

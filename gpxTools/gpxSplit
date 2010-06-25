@@ -60,7 +60,7 @@ my $num = @segments;
 print "Segments found: $num\n";
 print "Extracting segments ... \n";
 foreach(@segNames) {
-  system("$GPSBABEL -t -r -w -i gpx,gpxver=1.1 -f $tmp_file -x track,name='$_' -o gpx,gpxver=1.1 -F $outPath$_.gpx");
+  system("$GPSBABEL -t -r -w -i gpx,gpxver=1.1 -f $tmp_file -x track,name='$_' -o gpx,gpxver=1.1 -F $outPath'$_'.gpx");
   print "Segment $count from $num: $_\n";
   $count++;
 }

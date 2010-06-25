@@ -13,16 +13,41 @@ EXITOK=0
 
 # Script paths
 GPSBABEL='/opt/local/bin/gpsbabel'
-filesArg=`echo $@ | sed -e 's/ / -f /g'`
-outFile=$1".merge.gpx"
+GPXSEGMENTS=$HOME'/bin/gpxTools/gpxSegments'
+OUTDIR='/tmp'
+babelInput=$OUTDIR'/gpsbabel.tmp'
+
+outFile="$1.merge.gpx"
+maxChar=125 # More lead to error in gpx file
+
+SAVEIFS=$IFS
+IFS=$(echo -en "\n\b")
+for i in $@ ; do
+  title=$title" "`$GPXSEGMENTS "$i"`
+  if [ `diff $i $i` ] ; then # exploit diff to assure filename has no spaces!
+    filesArg=$filesArg" -f "$i
+  else
+    n=`echo $i | sed -e 's/ /_/g'`
+    mv "$i" "$n"
+    filesArg=$filesArg" -f "$n
+  fi
+done
+IFS=$SAVEIFS
+
+echo $title
+echo $filesArg
+
+[ `echo "$title" | wc -c` -lt $maxChar ] || title="Merged log"
 
 #echo "IN: $filesArg"
 #echo "OUT: $outFile"
 
-$GPSBABEL -r -t -i gpx,gpxver=1.1 -f $filesArg \
+$GPSBABEL -r -t -i gpx,gpxver=1.1 $filesArg \
   -x nuketypes,waypoints \
   -x transform,trk=rte,del \
-  -x track,merge,title='COMBINED_LOG' \
-  -o gpx,gpxver=1.1 -o gpx -F $outFile || exit $EXITKO
+  -x track,merge,title="$title" \
+  -o gpx,gpxver=1.1 -o gpx -F "$outFile" || exit $EXITKO
+
+  #-x track,merge,title='COMBINED_LOG' \
 
 exit $EXITOK
