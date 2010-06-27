@@ -19,20 +19,25 @@ GPX2GMAP=$HOME'/bin/gpxTools/gpx2gmap'
 OUTDIR='/tmp'
 MAXPOINTS=24 # Google Maps has max. 24
 
-outFile=$OUTDIR/`basename -s .gpx $1`_asRoute.gpx
+# Replace spaces in file names with '_'
+outFile=$OUTDIR/`basename -s .gpx "$1" | sed -e 's/ /_/g'`_asRoute.gpx
+# TODO fix file with spaces
+
+#echo "$1"
+#echo "$outFile"
 
 # Call gpsbabel
-$GPSBABEL -r -t -i gpx,gpxver=1.1 -f $1 \
+$GPSBABEL -r -t -i gpx,gpxver=1.1 -f "$1" \
   -x nuketypes,waypoints \
   -x transform,trk=rte,del \
   -x track,merge,title="COMBINED_LOG" \
   -x transform,rte=trk,del \
   -x simplify,count=$MAXPOINTS \
   -o gpx,gpxver=1.1 \
-  -F $outFile || exit $EXITKO
+  -F "$outFile" || exit $EXITKO
 
 # Call gpx (route) to google maps translator
-$GPX2GMAP $outFile || exit $EXITKO
+$GPX2GMAP "$outFile" || exit $EXITKO
 
 # Wait for the browser to be started
 sleep 5

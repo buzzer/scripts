@@ -26,13 +26,15 @@ my $file = $ARGV[0];
 my @segments=0;
 my @segNames=();
 my $tmp_file = "$file.tmp";
+$tmp_file =~ s/ /_/g;
 my $outPath=(join "/", dirname($file), basename($file,".gpx"))."_";
+$outPath =~ s/ /_/g;
 #print "IN: $file\n";
 #print "TMP: $tmp_file\n";
 #print "OUT: $outPath\n";
 
 print "Setting track names ... ";
-system("$GPSBABEL -t -r -w -i gpx,gpxver=1.1 -f $file -x nuketypes,waypoints -x transform,trk=rte,del -o gpx,gpxver=1.1 -F $tmp_file");
+system("$GPSBABEL -t -r -w -i gpx,gpxver=1.1 -f '$file' -x nuketypes,waypoints -x transform,trk=rte,del -o gpx,gpxver=1.1 -F '$tmp_file'");
 print "done\n";
 
 print "Getting track names ... ";

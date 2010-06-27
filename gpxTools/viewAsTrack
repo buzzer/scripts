@@ -19,25 +19,24 @@ BROWSER='open' # Put your browser command here
 GPXSEGMENTS=$HOME'/bin/gpxTools/gpxSegments'
 OUTDIR='/tmp'
 
-outFile=$OUTDIR/`basename -s .gpx $1`_asTrack.gpx
-htmlFile=$OUTDIR/`basename -s .gpx $outFile`*.html
+# Replace spaces in file names with '_'
+outFile=$OUTDIR/`basename -s .gpx "$1" | sed -e 's/ /_/g'`_asTrack.gpx
+htmlFile=$OUTDIR/`basename -s .gpx "$outFile" | sed -e 's/ /_/g'`*.html
 maxChar=125 # More lead to error in gpx file
 
 # Call gpsbabel
-$GPSBABEL -r -i gpx,gpxver=1.1 -f $1\
+$GPSBABEL -r -i gpx,gpxver=1.1 -f "$1" \
   -x nuketypes,waypoints \
   -x transform,trk=rte,del \
-  -o gpx,gpxver=1.1 -F $outFile || exit $EXITKO
+  -o gpx,gpxver=1.1 -F "$outFile" || exit $EXITKO
 
-  #-x track,merge,title="COMBINED_LOG" \
-
-title=`$GPXSEGMENTS $outFile`
+title=`$GPXSEGMENTS "$outFile"`
 [ `echo "$title" | wc -c` -lt $maxChar ] || title="Merged log"
 
 # Call gpx (track) to google maps translator
 #Looks like gpx2map seg faults on large merged tracks from gpsbabel
 #but not if it merges them self!?
-$GPX2MAP --title "$title" --merge $outFile #|| exit $EXITKO
+$GPX2MAP --title "$title" --merge "$outFile" #|| exit $EXITKO
 
 # Open browser and load map
 $BROWSER $htmlFile || exit $EXITKO
