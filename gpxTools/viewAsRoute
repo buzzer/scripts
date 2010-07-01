@@ -21,7 +21,6 @@ MAXPOINTS=24 # Google Maps has max. 24
 
 # Replace spaces in file names with '_'
 outFile=$OUTDIR/`basename -s .gpx "$1" | sed -e 's/ /_/g'`_asRoute.gpx
-# TODO fix file with spaces
 
 #echo "$1"
 #echo "$outFile"

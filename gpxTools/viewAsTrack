@@ -31,7 +31,7 @@ $GPSBABEL -r -i gpx,gpxver=1.1 -f "$1" \
   -o gpx,gpxver=1.1 -F "$outFile" || exit $EXITKO
 
 title=`$GPXSEGMENTS "$outFile"`
-[ `echo "$title" | wc -c` -lt $maxChar ] || title="Merged log"
+[ `echo "$title" | wc -c` -lt $maxChar ] || title="Merge of many tracks"
 
 # Call gpx (track) to google maps translator
 #Looks like gpx2map seg faults on large merged tracks from gpsbabel
