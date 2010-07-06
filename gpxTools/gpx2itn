@@ -14,24 +14,22 @@ EXITOK=0
 # Script paths
 GPSBABEL='/opt/local/bin/gpsbabel'
 MAXPOINTS=45 # TOMTOM itn is max. 48
-tmpFile=$1.tmp
-outFile=$1.itn
+tmpFile="$1".tmp
+outFile="$1".itn
 #echo "IN: $1"
 #echo "OUT: $outFile"
 
 # Convert to route only gpx file
-$GPSBABEL -r -t -i gpx,gpxver=1.1 -f $1 \
+$GPSBABEL -r -t -i gpx,gpxver=1.1 -f "$1" \
   -x nuketypes,waypoints \
   -x transform,rte=trk,del \
-  -x track,merge,title="COMBINED_LOG" \
-  -x simplify,count=$MAXPOINTS \
-  -o gpx,gpxver=1.1 -F $tmpFile || exit $EXITKO
+  -o tomtom_itn -F "$tmpFile" || exit $EXITKO
 
 # Convert route gpx to itn file
-$GPSBABEL -r -i gpx,gpxver=1.1 -f $tmpFile \
-  -o tomtom_itn \
-  -F $outFile || exit $EXITKO
+$GPSBABEL -r -i tomtom_itn -f "$tmpFile" \
+  -x simplify,count=$MAXPOINTS \
+  -o tomtom_itn -F "$outFile" || exit $EXITKO
 
-rm -f $tmpFile || exit $EXITKO
+rm -f "$tmpFile" || exit $EXITKO
 
 exit $EXITOK
