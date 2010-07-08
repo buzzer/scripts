@@ -1,0 +1,40 @@
+#!/usr/bin/perl
+#This work by Sebastian Rockel (sebastianrockel@gmail.com) is licensed under a 
+#Creative Commons Attribution-Noncommercial-Share Alike 3.0 Germany License.
+#"http://creativecommons.org/licenses/by-nc-sa/3.0/de/"
+#
+# Looks for more than one route/track in .gpx file and output the names
+#
+# 2010-07-02 Sebastian Rockel
+# Several routes or tracks in one file are recognized.
+#
+use warnings;
+use strict;
+
+# Open GPX file
+(@ARGV>0) || die "You have to specify a '.gpx' file as argument!";
+while (my $fpath = shift ) {
+  local $/=undef; # to read file as whole
+
+  open (my $fh, '<', $fpath) || die "Cannot open file $fpath: $!";
+
+  binmode $fh; # faster
+  my $string = <$fh>;
+  $string =~ s/\n//g; # remove newlines
+
+  if ($string =~ /<rte>[.\n]+<\/rte>/) {
+    print "yes";
+  }
+  my $newstring = 1;
+  # TODO Check if working when tracks and routes are mixed in one file!
+  while ($string =~ m/<(rte|trk)>.*?<name>(.*?)<\/name>.*?<\/(rte|trk)>/g) {
+    if ( $newstring == 0 ) { print "\t";}
+    print $2; # No tabs in names are allowed!
+    $newstring = 0;
+  }
+
+  close ($fh);
+}
+print "\n";
+
+exit 0;

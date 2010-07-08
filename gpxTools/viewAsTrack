@@ -16,7 +16,7 @@ EXITOK=0
 GPSBABEL='/opt/local/bin/gpsbabel'
 GPX2MAP=$HOME'/bin/gpx2map/gpx2map'
 BROWSER='open' # Put your browser command here
-GPXSEGMENTS=$HOME'/bin/gpxTools/gpxSegments'
+GPXSEGMENTS=$HOME'/bin/gpxTools/gpxSegments_new'
 OUTDIR='/tmp'
 
 # Replace spaces in file names with '_'

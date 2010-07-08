@@ -13,12 +13,12 @@ EXITOK=0
 
 # Script paths
 GPSBABEL='/opt/local/bin/gpsbabel'
-outFile=$1.gpx
-echo "IN: $1"
-echo "OUT: $outFile"
+outFile="$1".gpx
+#echo "IN: $1"
+#echo "OUT: $outFile"
 
 # Convert to route only gpx file
-$GPSBABEL -r -i tomtom_itn -f $1 \
-  -o gpx,gpxver=1.1 -F $outFile || exit $EXITKO
+$GPSBABEL -r -i tomtom_itn -f "$1" \
+  -o gpx,gpxver=1.1 -F "$outFile" || exit $EXITKO
 
 exit $EXITOK

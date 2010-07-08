@@ -7,18 +7,15 @@
 # http://blog.dinotools.de/2008/11/24/einzelne-tracks-aus-gpx-dateien-extrahieren
 # modified by 2010-06-06 Sebastian Rockel
 
-#use warnings;
+use warnings;
 use strict;
 use File::Basename;
-
-# Geo::Gpx is a Perl module to create and parse GPX files.
-# For more information for use see 'perldoc Geo::Gpx'
-use Geo::Gpx;
 
 my $EXITOK=0;
 
 # Script paths
 my $GPSBABEL='/opt/local/bin/gpsbabel';
+my $GPXSEGMENTS=$ENV{'HOME'}.'/bin/gpxTools/gpxSegments_new';
 
 die "Missing gpx file argument\n" unless $ARGV[0] =~ /.+\.gpx/;
 
@@ -29,6 +26,7 @@ my $tmp_file = "$file.tmp";
 $tmp_file =~ s/ /_/g;
 my $outPath=(join "/", dirname($file), basename($file,".gpx"))."_";
 $outPath =~ s/ /_/g;
+
 #print "IN: $file\n";
 #print "TMP: $tmp_file\n";
 #print "OUT: $outPath\n";
@@ -39,25 +37,17 @@ print "done\n";
 
 print "Getting track names ... ";
 
-open(INFILE, $tmp_file) or die "Could not open $tmp_file: $!\n";
+open(SEGMENTS, "$GPXSEGMENTS $file|");
+my $segments = <SEGMENTS>;
+chomp $segments;
+close (SEGMENTS);
 
-my $gpxin = Geo::Gpx->new( input => $tmp_file );
-
-#TODO array of references is depreciated
-if ( $gpxin->tracks() ) {
-  @segments=@{$gpxin->tracks()};
-  # Get segments' name
-  for (my $count=0; $count < @segments; $count++) {
-    push(@segNames, @segments->[$count]->{'name'});
-  }
-}
-
-close(INFILE);
+my @segNames = split ("\t", $segments);
 
 print "done\n";
 
 my $count = 1;
-my $num = @segments;
+my $num = @segNames;
 
 print "Segments found: $num\n";
 print "Extracting segments ... \n";
