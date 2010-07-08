@@ -1,0 +1,44 @@
+#!/bin/sh
+# 2010-07-08 Sebastian Rockel
+#
+# Scans an image via sane usb driver
+# Image will be 300dpi at black and white color in tiff format
+# Saved to Desktop
+# 
+# requires: imagemagick, scanimage, SANE
+
+cMode="Gray" # Color mode: Color|Gray|Lineart
+resolution="300" # 50..1200dpi
+format="jpg" # Image format: pnm|tiff
+outputDir=$HOME'/Desktop'
+tmpDir='/tmp'
+stdFname="Scan"
+extFname=$stdFname
+SCANIMAGE="/usr/local/bin/scanimage"
+CONVERT="/usr/local/bin/convert"
+OPEN="open" # OS program to view output image
+
+# File name detection
+try=0
+# echo $outputDir/$extFname.$format
+while [ -f $outputDir/$extFname.$format ] ; do
+  try=$[try+1]
+  extFname=$stdFname$try
+done
+# echo $extFname
+
+scanFname=$tmpDir/$extFname.$format
+# echo $scanFname
+$SCANIMAGE --mode $cMode --resolution $resolution --format=$format > $scanFname || exit -1
+
+
+convFname=$outputDir/$extFname.$format
+# echo $convFname
+$CONVERT $scanFname $convFname || exit -1
+
+# Clean temporary files
+rm $scanFname || exit -1
+
+$OPEN $convFname
+
+exit 0;
