@@ -10,6 +10,7 @@
 cMode="Gray" # Color mode: Color|Gray|Lineart
 resolution="300" # 50..1200dpi
 format="jpg" # Image format: pnm|tiff
+gamma="2.2"
 outputDir=$HOME'/Desktop'
 tmpDir='/tmp'
 stdFname="Scan"
@@ -34,7 +35,7 @@ $SCANIMAGE --mode $cMode --resolution $resolution --format=$format > $scanFname 
 
 convFname=$outputDir/$extFname.$format
 # echo $convFname
-$CONVERT $scanFname $convFname || exit -1
+$CONVERT $scanFname -gamma $gamma $convFname || exit -1
 
 # Clean temporary files
 rm $scanFname || exit -1
