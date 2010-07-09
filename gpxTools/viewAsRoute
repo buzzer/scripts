@@ -28,12 +28,13 @@ outFile=$OUTDIR/`basename -s .gpx "$1" | sed -e 's/ /_/g'`_asRoute.gpx
 # Call gpsbabel
 $GPSBABEL -r -t -i gpx,gpxver=1.1 -f "$1" \
   -x nuketypes,waypoints \
-  -x transform,trk=rte,del \
-  -x track,merge,title="COMBINED_LOG" \
-  -x transform,rte=trk,del \
   -x simplify,count=$MAXPOINTS \
   -o gpx,gpxver=1.1 \
   -F "$outFile" || exit $EXITKO
+
+  #-x transform,trk=rte,del \
+  #-x track,merge,title="MERGED_ROUTES" \
+  #-x transform,rte=trk,del \
 
 # Call gpx (route) to google maps translator
 $GPX2GMAP "$outFile" || exit $EXITKO

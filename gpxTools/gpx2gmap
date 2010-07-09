@@ -36,8 +36,15 @@ open (my $fh, '<', $fpath) or die "Cannot open file $fpath: $!";
 # Parse GPX from open file
 my $gpx = Geo::Gpx->new( input => $fh );
 
-# Get an iterator that visits all the route points in a "Geo::Gpx".
-my $iter = $gpx->iterate_routepoints();
+my $iter = 0;
+# Check for any routes in gpx structure
+if ($gpx->routes()) {
+  # Get an iterator that visits all the route points in a "Geo::Gpx".
+  $iter = $gpx->iterate_routepoints();
+} else {
+  # Get track point iterator
+  $iter = $gpx->iterate_trackpoints();
+}
 
 my $count = -1;
 
