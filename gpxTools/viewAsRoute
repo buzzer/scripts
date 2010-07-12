@@ -39,8 +39,6 @@ $GPSBABEL -r -t -i gpx,gpxver=1.1 -f "$1" \
 # Call gpx (route) to google maps translator
 $GPX2GMAP "$outFile" || exit $EXITKO
 
-# Wait for the browser to be started
-sleep 5
 # Clean temporary files
 rm -f $OUTDIR/`basename -s .gpx $outFile`*
 

@@ -18,10 +18,12 @@ GPX2MAP=$HOME'/bin/gpx2map/gpx2map'
 BROWSER='open' # Put your browser command here
 GPXSEGMENTS=$HOME'/bin/gpxTools/gpxSegments_new'
 OUTDIR='/tmp'
+USERDIR=`dirname $1`
 
 # Replace spaces in file names with '_'
 outFile=$OUTDIR/`basename -s .gpx "$1" | sed -e 's/ /_/g'`_asTrack.gpx
-htmlFile=$OUTDIR/`basename -s .gpx "$outFile" | sed -e 's/ /_/g'`*.html
+#htmlFile=$OUTDIR/`basename -s .gpx "$outFile" | sed -e 's/ /_/g'`*.html
+htmlFile=$USERDIR/`basename -s .gpx "$outFile" | sed -e 's/ /_/g'`*.html
 maxChar=125 # More lead to error in gpx file
 
 # Call gpsbabel
@@ -38,12 +40,13 @@ title=`$GPXSEGMENTS "$outFile"`
 #but not if it merges them self!?
 $GPX2MAP --title "$title" --merge "$outFile" #|| exit $EXITKO
 
+# Clean temporary files
+rm -f $outFile
+
+# Move to user directory
+mv $OUTDIR/`basename -s .gpx $outFile`* `dirname $1`
+
 # Open browser and load map
 $BROWSER $htmlFile || exit $EXITKO
-
-# Wait for the browser to be started
-sleep 2
-# Clean temporary files
-rm -f $OUTDIR/`basename -s .gpx $outFile`*
 
 exit $EXITOK
