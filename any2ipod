@@ -46,11 +46,14 @@ ABITR=96
 ARATE=44100
 # Calculate video width and height
 VWIDTH_STD=480 ; VHEIGHT_STD=320 # iPod default
-[ $VWIDTH_STD -gt $vwidth ] && VWIDTH=$vwidth || VWIDTH=$VWIDTH_STD
-VHEIGHT=`echo "$VWIDTH*$vheight/$vwidth" | bc -l | sed -e 's/\..*//'`
-if [ $VHEIGHT -gt $VHEIGHT_STD ] ; then
+VRatioIpod=`echo "$VWIDTH_STD/$VHEIGHT_STD" | bc -l`
+OriVRatio=`echo "$vwidth/$vheight" | bc -l`
+if [ `echo "$OriVRatio<$VRatioIpod" | bc` == "1"  ] ; then
   VHEIGHT=$VHEIGHT_STD
-  VWIDTH=`echo "$VHEIGHT*($vwidth/$vheight)" | bc -l | sed -e 's/\..*//'`
+  VWIDTH=`echo "$VHEIGHT_STD*$OriVRatio" | bc -l | sed -e 's/\..*//'`
+else
+  VWIDTH=$VWIDTH_STD
+  VHEIGHT=`echo "$VWIDTH_STD/$OriVRatio" | bc -l | sed -e 's/\..*//'`
 fi
 # For ffmpeg resolution has to be multiple of 2
 let wOddRatio=$VWIDTH%2
