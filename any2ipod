@@ -9,6 +9,8 @@
 FFMPEG="/opt/local/bin/ffmpeg"
 VIDEOPAR="/Users/sebastian/bin/videopar"
 LOGFILE="$HOME/`basename $0`.log"
+THREADS=0 # 0 sets automatic
+ODIR="/Users/sebastian/Music/iTunes/iTunes Music/Movies/"
 
 # TODO take also relative paths
 if [ "$1" = "" ] || [ ! -f "$1" ]
@@ -34,34 +36,98 @@ done
 
 # ffmpeg cannot handle more than 2 channel audio
 case $audiochan in
-  [1-2])    ;;
-  "stereo") ;;
-  *) echo "Embedded audio track not compatible: $audiochan" ; exit 0 ;;
+  1)        audiochan=1;;
+  "mono")   audiochan=1;;
+  2)        audiochan=2;;
+  "stereo") audiochan=2;;
+  *) echo "Embedded audio track not compatible: $audiochan. No audio!" ; audiochan=0 ;;
 esac
 
 # Output parameters of video
 MAXRATE="1450k"
-VBITR=512
-ABITR=96
-ARATE=44100
+VBITR1=512
+VBITR2=416
+VBITR3=320
+VBITR=$VBITR1
+ABITR1=96
+ABITR2=48
+ABITR=$ABITR1
+ARATE1=44100
+ARATE2=22050
+ARATE=$ARATE1
 # Calculate video width and height
 VWIDTH_STD=480 ; VHEIGHT_STD=320 # iPod default
 VRatioIpod=`echo "$VWIDTH_STD/$VHEIGHT_STD" | bc -l`
 OriVRatio=`echo "$vwidth/$vheight" | bc -l`
-if [ `echo "$OriVRatio<$VRatioIpod" | bc` == "1"  ] ; then
-  VHEIGHT=$VHEIGHT_STD
-  VWIDTH=`echo "$VHEIGHT_STD*$OriVRatio" | bc -l | sed -e 's/\..*//'`
+
+# Video bitrate optimizations
+if [ $vwidth -lt $VWIDTH_STD ] ; then
+  VBITR=$VBITR3
+elif [ $vwidth -lt 720 ] ; then
+  VBITR=$VBITR2
+else
+  VBITR=$VBITR1
+fi
+
+# Audio bitrate optimizations
+if [ $audiochan -eq 1 ] ; then
+  ABITR=$ABITR2
+  ARATE=$ARATE2
+fi
+
+# Do not scale small videos
+if [ $vwidth -lt $VWIDTH_STD ] ; then
+  VWIDTH=$vwidth
 else
   VWIDTH=$VWIDTH_STD
-  VHEIGHT=`echo "$VWIDTH_STD/$OriVRatio" | bc -l | sed -e 's/\..*//'`
 fi
-# For ffmpeg resolution has to be multiple of 2
-let wOddRatio=$VWIDTH%2
-let hOddRatio=$VHEIGHT%2
-[ $wOddRatio -eq 1 ] && let VWIDTH=$VWIDTH-1
-[ $hOddRatio -eq 1 ] && let VHEIGHT=$VHEIGHT-1
-THREADS=0 # 0 sets automatic
-ODIR="/Users/sebastian/Music/iTunes/iTunes Music/Movies/"
+if [ $vheight -lt $VHEIGHT_STD ] ; then
+  VHEIGHT=$vheight
+else
+  VHEIGHT=$VHEIGHT_STD
+fi
+
+# Crop
+if [ `echo "$OriVRatio<$VRatioIpod" | bc` -eq 1 ] ; then
+  if [ $vheight -gt $VHEIGHT_STD ] ; then
+    vCrop=`echo "($vheight-($vwidth/$VRatioIpod))/2" | bc`
+  fi
+elif [ `echo "$OriVRatio>$VRatioIpod" | bc` -eq 1 ] ; then
+  if [ $vwidth -gt $VWIDTH_STD ] ; then
+    hCrop=`echo "($vwidth-($vheight*$VRatioIpod))/2" | bc`
+  fi
+fi
+if [ $hCrop ] ; then
+  cx=$hCrop
+else
+  cx=0
+fi
+if [ $vCrop ] ; then
+  cy=$vCrop
+else
+  cy=0
+fi
+cwidth=`echo "$vwidth-2*$cx" | bc`
+cheight=`echo "$vheight-2*$cy" | bc`
+
+echo
+echo "Encode with following settings:"
+echo video bitrate: "$VBITR"
+echo audio bitrate: "$ABITR"
+echo audio sample rate: "$ARATE"
+echo audio channels: $audiochan
+echo src video size: "$vwidth"x"$vheight"
+echo aspect ratio: "$OriVRatio"
+echo out video size: "$VWIDTH"x"$VHEIGHT"
+echo out aspect ratio: "$VRatioIpod"
+echo crop: "$cx:$cy:$cwidth:$cheight"
+echo 2-pass encoding
+echo threads: $THREADS
+echo output directory: $ODIR
+echo
+
+# Check for debug mode
+if [ ! $DEBUG ] ; then
 
 # Create unique temp directory
 RANPREFIX="`basename $0`-""$RANDOM"
@@ -69,19 +135,7 @@ TMPDIR="/tmp/$RANPREFIX/" ;
 [ -d "$TMPDIR" ] || mkdir "$TMPDIR" || exit -1
 cd $TMPDIR
 
-echo
-echo "Encode with following settings:"
-echo video bitrate: $VBITR
-echo audio bitrate: $ABITR
-echo audio sample rate: $ARATE
-echo video size: "$VWIDTH"x"<auto>"
-echo aspect ratio: "<auto>"
-echo 2-pass encoding
-echo threads: $THREADS
-echo output directory: $ODIR
-echo
-
-IFILE="$1" #"$i"
+IFILE="$1"
 OFILE="$TMPDIR"`basename "$1"`.mp4
 
 echo "`date` `basename "$OFILE"` BEGIN ENCODING" >> $LOGFILE
@@ -90,7 +144,7 @@ echo "`date` `basename "$OFILE"` BEGIN ENCODING" >> $LOGFILE
 $FFMPEG -an -pass 1 \
   -i "$IFILE" \
   -threads $THREADS \
-  -vf "scale=$VWIDTH:$VHEIGHT" \
+  -vf "crop=$cx:$cy:$cwidth:$cheight,scale=$VWIDTH:$VHEIGHT" \
   -vcodec libx264 \
   -flags +loop \
   -cmp +chroma \
@@ -118,18 +172,16 @@ $FFMPEG -an -pass 1 \
   -level 30 \
   -f rawvideo -y /dev/null || exit -1
 
-  #"$OFILE" && rm "$OFILE" || exit -1
-
   # 2nd pass
 $FFMPEG \
   -i "$IFILE" \
   -acodec libfaac \
   -ab "$ABITR"k \
   -ar $ARATE \
-  -ac 2 \
+  -ac $audiochan \
   -pass 2 \
   -threads $THREADS \
-  -vf "scale=$VWIDTH:$VHEIGHT" \
+  -vf "crop=$cx:$cy:$cwidth:$cheight,scale=$VWIDTH:$VHEIGHT" \
   -vcodec libx264 \
   -flags +loop \
   -cmp +chroma \
@@ -161,5 +213,7 @@ echo "`date` `basename "$OFILE"` END ENCODING" >> $LOGFILE
 # Clean log files
 rm ffmpeg2pass-0.log x264_2pass.log* || exit -1
 rm -r $TMPDIR || exit -1
+
+fi
 
 exit 0
