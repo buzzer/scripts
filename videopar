@@ -5,6 +5,11 @@
 use warnings;
 use strict;
 
+if ( ($#ARGV+1) <= 0) {
+  print "Usage: videopar <video file>\n";
+  exit 0;
+}
+
 my $INFILE=shift;
 die "Cannot open file $INFILE, $!" if (! -e $INFILE);
 
@@ -29,6 +34,8 @@ while (<RAWINFO>) {
     @audiopar = split(",", $1);
   }
 }
+close(RAWINFO);
+
 my @vidpar;
 # resolution
 my @resolution = split(" ", $videopar[2]);
